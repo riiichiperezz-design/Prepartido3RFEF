@@ -1,0 +1,51 @@
+/** Pantalla de acceso (login local básico por contraseña). */
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-ink px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 text-center text-white">
+          <div className="text-xs font-semibold uppercase tracking-widest text-pitch-500">
+            Prepartido
+          </div>
+          <h1 className="text-3xl font-extrabold">3ª RFEF · Grupo 14</h1>
+          <p className="mt-1 text-sm text-slate-400">Herramienta privada de preparación arbitral</p>
+        </div>
+
+        <form action="/api/auth/login" method="post" className="card space-y-4 p-6">
+          <div>
+            <label className="label" htmlFor="password">
+              Contraseña de acceso
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoFocus
+              required
+              className="input"
+              placeholder="Introduce tu contraseña"
+            />
+          </div>
+
+          {searchParams.error && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              Contraseña incorrecta. Inténtalo de nuevo.
+            </p>
+          )}
+
+          <button type="submit" className="btn-primary w-full py-2.5">
+            Entrar
+          </button>
+
+          <p className="text-center text-xs text-slate-400">
+            Configura tu contraseña en el archivo <code>.env</code> (APP_PASSWORD).
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}

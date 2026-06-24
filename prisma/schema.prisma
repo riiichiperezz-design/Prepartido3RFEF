@@ -1,0 +1,206 @@
+// ---------------------------------------------------------------------------
+// Prepartido3RFEF — Esquema de datos (Prisma + SQLite)
+//
+// NOTA IMPORTANTE: SQLite no soporta enums nativos en Prisma, por lo que los
+// campos tipo "enum" (riesgo, protesta, posición, etc.) se almacenan como
+// String con un conjunto de valores acordado. Las constantes válidas viven en
+// src/lib/enums.ts para mantener una única fuente de verdad en la app.
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+  // "native" para tu equipo local; "rhel-openssl-3.0.x" para el runtime de Vercel.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Competición (liga / grupo / temporada)
+model Competition {
+  id      String  @id @default(cuid())
+  name    String
+  season  String
+  group   String?
+  source  String  @default("MANUAL") // MANUAL | CSV | API
+
+  teams   Team[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Equipo
+model Team {
+  id                String   @id @default(cuid())
+  competitionId     String?
+  competition       Competition? @relation(fields: [competitionId], references: [id])
+
+  name              String
+  shortName         String?
+  crestUrl          String?
+  city              String?
+  stadium           String?
+  stadiumAddress    String?
+  category          String?  @default("Tercera Federación")
+  seasonsInCategory Int?     @default(0)
+
+  // Clasificación / estadística agregada
+  currentPosition   Int?
+  points            Int?     @default(0)
+  goalsFor          Int      @default(0)
+  goalsAgainst      Int      @default(0)
+  yellowCards       Int      @default(0)
+  redCards          Int      @default(0)
+
+  // Valoración arbitral (LOW | MEDIUM | HIGH)
+  protestLevel      String   @default("LOW")
+  physicalLevel     String   @default("MEDIUM")
+  refereeRisk       String   @default("LOW")
+
+  // Información cualitativa / notas propias
+  playingStyle      String?
+  tacticalNotes     String?
+  setPieceNotes     String?
+  assistantNotes    String?
+  generalNotes      String?
+
+  players           Player[]
+  staff             StaffMember[]
+  homeMatches       Match[]  @relation("HomeTeam")
+  awayMatches       Match[]  @relation("AwayTeam")
+
+  // Origen del dato: MANUAL | CSV | API (para saber qué es editable/importado)
+  dataOrigin        String   @default("MANUAL")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// Jugador
+model Player {
+  id                       String   @id @default(cuid())
+  teamId                   String
+  team                     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  name                     String
+  photoUrl                 String?
+  dorsal                   Int?
+  age                      Int?
+  birthDate                DateTime?
+  position                 String?  // GK | CB | FB | DM | CM | AM | WINGER | ST
+  dominantFoot             String?  // L | R | BOTH
+
+  // Estadística temporada actual
+  matches                  Int      @default(0)
+  minutes                  Int      @default(0)
+  goals                    Int      @default(0)
+  assists                  Int      @default(0)
+  yellowCards              Int      @default(0)
+  redCards                 Int      @default(0)
+
+  // Temporada anterior (histórico disciplinario)
+  previousSeasonYellowCards Int     @default(0)
+  previousSeasonRedCards    Int     @default(0)
+
+  // Etiquetas de comportamiento (lista separada por comas, ej: "protestón,reincidente")
+  behaviourTags            String?
+
+  // LOW | MEDIUM | HIGH
+  refereeRisk              String   @default("LOW")
+
+  notes                    String?
+  dataOrigin               String   @default("MANUAL")
+
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
+// Cuerpo técnico
+model StaffMember {
+  id            String   @id @default(cuid())
+  teamId        String
+  team          Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  name          String
+  role          String?  // Entrenador, Segundo, Delegado, Fisio...
+  photoUrl      String?
+  previousTeams String?  // texto libre / separado por comas
+
+  yellowCards   Int      @default(0)
+  redCards      Int      @default(0)
+
+  protestLevel  String   @default("LOW")  // LOW | MEDIUM | HIGH
+  refereeRisk   String   @default("LOW")  // LOW | MEDIUM | HIGH
+
+  notes         String?
+  dataOrigin    String   @default("MANUAL")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Partido
+model Match {
+  id             String   @id @default(cuid())
+
+  homeTeamId     String
+  homeTeam       Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId     String
+  awayTeam       Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  date           DateTime?
+  round          String?
+  stadium        String?
+
+  // PENDING | PREPARED | REFEREED
+  status         String   @default("PENDING")
+
+  referee        String?
+  assistant1     String?
+  assistant2     String?
+  fourthOfficial String?
+
+  preMatchNotes  String?
+  postMatchNotes String?
+  incidents      String?
+
+  // Instrucciones para asistentes (se guardan como JSON serializado)
+  assistantInstructions String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Nota arbitral genérica, asociable a cualquier entidad
+model RefereeNote {
+  id             String   @id @default(cuid())
+
+  entityType     String   // TEAM | PLAYER | STAFF | MATCH
+  entityId       String
+
+  date           DateTime @default(now())
+  type           String   @default("OTHER") // TACTICAL | DISCIPLINARY | PROTEST | BENCH | ASSISTANT | SET_PIECE | AREA | BEHAVIOUR | OTHER
+  importance     String   @default("MEDIUM") // LOW | MEDIUM | HIGH
+  text           String
+  showInBriefing Boolean  @default(true)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([entityType, entityId])
+}
+
+// Configuración de fuentes de datos
+model DataSource {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   // API | CSV | MANUAL
+  lastSync  DateTime?
+  config    String?  // JSON serializado con parámetros (sin claves sensibles)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
