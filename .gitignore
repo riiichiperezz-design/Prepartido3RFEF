@@ -1,0 +1,36 @@
+# dependencias
+/node_modules
+/.pnp
+.pnp.js
+
+# next
+/.next/
+/out/
+next-env.d.ts
+
+# producción
+/build
+
+# base de datos local (privada)
+/prisma/dev.db
+/prisma/dev.db-journal
+*.db
+*.db-journal
+
+# entorno (privado, contiene claves de API)
+.env
+.env.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# sistema
+.DS_Store
+*.pem
+.vscode/
+.idea/
+
+# uploads temporales del importador
+/uploads
