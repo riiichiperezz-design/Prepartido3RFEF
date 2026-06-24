@@ -34,3 +34,5 @@ yarn-error.log*
 
 # uploads temporales del importador
 /uploads
+*.sqlite-journal
+*.tsbuildinfo
