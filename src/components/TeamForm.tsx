@@ -3,31 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Team } from "@prisma/client";
+import ImageUpload from "./ImageUpload";
 
-/** Formulario de edición de equipo. No afecta a las notas arbitrales. */
-export default function TeamEditForm({ team }: { team: Team }) {
+/**
+ * Formulario para CREAR o EDITAR un equipo (incluye subida de escudo).
+ * Si recibe `team`, edita; si no, crea uno nuevo.
+ * No afecta a las notas arbitrales.
+ */
+export default function TeamForm({ team }: { team?: Team }) {
   const router = useRouter();
+  const isEdit = Boolean(team);
   const [form, setForm] = useState({
-    name: team.name,
-    shortName: team.shortName ?? "",
-    crestUrl: team.crestUrl ?? "",
-    city: team.city ?? "",
-    stadium: team.stadium ?? "",
-    stadiumAddress: team.stadiumAddress ?? "",
-    currentPosition: team.currentPosition ?? "",
-    points: team.points ?? 0,
-    goalsFor: team.goalsFor,
-    goalsAgainst: team.goalsAgainst,
-    yellowCards: team.yellowCards,
-    redCards: team.redCards,
-    protestLevel: team.protestLevel,
-    physicalLevel: team.physicalLevel,
-    refereeRisk: ["LOW", "MEDIUM", "HIGH"].includes(team.refereeRisk) ? team.refereeRisk : "AUTO",
-    playingStyle: team.playingStyle ?? "",
-    tacticalNotes: team.tacticalNotes ?? "",
-    setPieceNotes: team.setPieceNotes ?? "",
-    assistantNotes: team.assistantNotes ?? "",
-    generalNotes: team.generalNotes ?? "",
+    name: team?.name ?? "",
+    shortName: team?.shortName ?? "",
+    crestUrl: team?.crestUrl ?? "",
+    city: team?.city ?? "",
+    stadium: team?.stadium ?? "",
+    stadiumAddress: team?.stadiumAddress ?? "",
+    currentPosition: team?.currentPosition ?? "",
+    points: team?.points ?? 0,
+    goalsFor: team?.goalsFor ?? 0,
+    goalsAgainst: team?.goalsAgainst ?? 0,
+    yellowCards: team?.yellowCards ?? 0,
+    redCards: team?.redCards ?? 0,
+    protestLevel: team?.protestLevel ?? "LOW",
+    physicalLevel: team?.physicalLevel ?? "MEDIUM",
+    refereeRisk: team && ["LOW", "MEDIUM", "HIGH"].includes(team.refereeRisk) ? team.refereeRisk : "AUTO",
+    playingStyle: team?.playingStyle ?? "",
+    tacticalNotes: team?.tacticalNotes ?? "",
+    setPieceNotes: team?.setPieceNotes ?? "",
+    assistantNotes: team?.assistantNotes ?? "",
+    generalNotes: team?.generalNotes ?? "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -38,27 +44,31 @@ export default function TeamEditForm({ team }: { team: Team }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    await fetch(`/api/teams/${team.id}`, {
-      method: "PATCH",
+    const res = await fetch(isEdit ? `/api/teams/${team!.id}` : "/api/teams", {
+      method: isEdit ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
+    const data = await res.json();
     setSaving(false);
-    router.push(`/teams/${team.id}`);
+    router.push(`/teams/${isEdit ? team!.id : data.id}`);
     router.refresh();
   }
 
   return (
     <form onSubmit={save} className="space-y-6">
       <section className="card p-5">
-        <h2 className="section-title mb-4">Datos del equipo</h2>
+        <h2 className="section-title mb-4">Escudo y datos</h2>
+        <div className="mb-4">
+          <label className="label">Escudo del equipo</label>
+          <ImageUpload name={form.shortName || form.name} value={form.crestUrl} onChange={(v) => set("crestUrl", v)} square />
+        </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Nombre"><input className="input" value={form.name} onChange={(e) => set("name", e.target.value)} required /></Field>
           <Field label="Nombre corto"><input className="input" value={form.shortName} onChange={(e) => set("shortName", e.target.value)} /></Field>
           <Field label="Localidad"><input className="input" value={form.city} onChange={(e) => set("city", e.target.value)} /></Field>
           <Field label="Estadio"><input className="input" value={form.stadium} onChange={(e) => set("stadium", e.target.value)} /></Field>
           <Field label="Dirección del estadio"><input className="input" value={form.stadiumAddress} onChange={(e) => set("stadiumAddress", e.target.value)} /></Field>
-          <Field label="URL del escudo (opcional)"><input className="input" value={form.crestUrl} onChange={(e) => set("crestUrl", e.target.value)} placeholder="https://..." /></Field>
         </div>
       </section>
 
@@ -115,7 +125,7 @@ export default function TeamEditForm({ team }: { team: Team }) {
 
       <div className="flex gap-2">
         <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
-          {saving ? "Guardando..." : "Guardar cambios"}
+          {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear equipo"}
         </button>
         <button type="button" onClick={() => router.back()} className="btn-ghost">
           Cancelar

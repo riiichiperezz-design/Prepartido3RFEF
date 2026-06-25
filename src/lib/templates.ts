@@ -11,15 +11,16 @@ export const TEMPLATES: Record<
 > = {
   teams: {
     columns: [
-      "nombre", "nombre_corto", "localidad", "estadio", "posicion", "puntos",
-      "goles_favor", "goles_contra", "amarillas", "rojas", "nivel_protesta",
-      "nivel_fisico", "estilo_juego",
+      "nombre", "nombre_corto", "localidad", "estadio", "escudo_url", "posicion",
+      "puntos", "goles_favor", "goles_contra", "amarillas", "rojas",
+      "nivel_protesta", "nivel_fisico", "estilo_juego",
     ],
     example: {
       nombre: "CD Ejemplo",
       nombre_corto: "Ejemplo",
       localidad: "Mérida",
       estadio: "Estadio Municipal",
+      escudo_url: "https://ejemplo.com/escudo.png",
       posicion: "7",
       puntos: "32",
       goles_favor: "30",
@@ -35,11 +36,12 @@ export const TEMPLATES: Record<
     columns: [
       "equipo", "nombre", "dorsal", "edad", "posicion", "pie", "partidos",
       "minutos", "goles", "asistencias", "amarillas", "rojas",
-      "amarillas_temp_anterior", "rojas_temp_anterior", "etiquetas", "notas",
+      "amarillas_temp_anterior", "rojas_temp_anterior", "etiquetas", "foto_url", "notas",
     ],
     example: {
       equipo: "CD Ejemplo",
       nombre: "Juan Pérez",
+      foto_url: "",
       dorsal: "10",
       edad: "27",
       posicion: "AM",

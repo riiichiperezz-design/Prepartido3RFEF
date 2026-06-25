@@ -56,6 +56,11 @@ export default async function PlayerDetailPage({ params }: { params: { id: strin
               </div>
             )}
           </div>
+          <div className="flex gap-2">
+            <Link href={`/players/${player.id}/edit`} className="btn-ghost">
+              ✏️ Editar
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -83,6 +83,7 @@ export async function importTeams(rows: ImportRow[]): Promise<ImportResult> {
           shortName: keep(r["nombre_corto"] ?? "", existing.shortName, (s) => s),
           city: keep(r["localidad"] ?? "", existing.city, (s) => s),
           stadium: keep(r["estadio"] ?? "", existing.stadium, (s) => s),
+          crestUrl: keep(r["escudo_url"] ?? "", existing.crestUrl, (s) => s),
           // Texto propio: solo se actualiza si viene relleno (conserva tus notas)
           playingStyle: keep(r["estilo_juego"] ?? "", existing.playingStyle, (s) => s),
           ...stats,
@@ -97,6 +98,7 @@ export async function importTeams(rows: ImportRow[]): Promise<ImportResult> {
           shortName: r["nombre_corto"] || null,
           city: r["localidad"] || null,
           stadium: r["estadio"] || null,
+          crestUrl: r["escudo_url"] || null,
           playingStyle: r["estilo_juego"] || null,
           category: "Tercera Federación",
           ...stats,
@@ -152,6 +154,7 @@ export async function importPlayers(rows: ImportRow[]): Promise<ImportResult> {
           ...stats,
           // Conserva etiquetas y notas si la celda viene vacía
           behaviourTags: keep(r["etiquetas"] ?? "", existing.behaviourTags, (s) => s),
+          photoUrl: keep(r["foto_url"] ?? "", existing.photoUrl, (s) => s),
           notes: keep(r["notas"] ?? "", existing.notes, (s) => s),
           dataOrigin: "CSV",
         },
@@ -164,6 +167,7 @@ export async function importPlayers(rows: ImportRow[]): Promise<ImportResult> {
           name,
           ...stats,
           behaviourTags: r["etiquetas"] || null,
+          photoUrl: r["foto_url"] || null,
           notes: r["notas"] || null,
           dataOrigin: "CSV",
         },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import TeamEditForm from "@/components/TeamEditForm";
+import TeamForm from "@/components/TeamForm";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export default async function EditTeamPage({ params }: { params: { id: string } 
       <p className="text-sm text-ink-muted">
         Tus notas arbitrales no se ven afectadas al guardar estos cambios.
       </p>
-      <TeamEditForm team={team} />
+      <TeamForm team={team} />
     </div>
   );
 }

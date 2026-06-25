@@ -2,22 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { toInt, normalizeLevel } from "@/lib/format";
 
-/**
- * Actualiza los datos de un equipo.
- * IMPORTANTE: solo toca campos del propio equipo; las notas arbitrales viven en
- * otra tabla y nunca se ven afectadas por esta edición.
- */
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+/** Crea un equipo nuevo (edición manual). */
+export async function POST(req: NextRequest) {
   const b = await req.json();
-  const updated = await prisma.team.update({
-    where: { id: params.id },
+  if (!b.name?.trim()) {
+    return NextResponse.json({ error: "El nombre es obligatorio." }, { status: 400 });
+  }
+
+  // Asocia el equipo a la competición existente (si la hay).
+  const competition = await prisma.competition.findFirst();
+
+  const team = await prisma.team.create({
     data: {
-      name: b.name,
+      competitionId: competition?.id ?? null,
+      name: b.name.trim(),
       shortName: b.shortName || null,
       crestUrl: b.crestUrl || null,
       city: b.city || null,
       stadium: b.stadium || null,
       stadiumAddress: b.stadiumAddress || null,
+      category: "Tercera Federación",
       currentPosition: b.currentPosition ? toInt(b.currentPosition) : null,
       points: toInt(b.points),
       goalsFor: toInt(b.goalsFor),
@@ -26,24 +30,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       redCards: toInt(b.redCards),
       protestLevel: normalizeLevel(b.protestLevel),
       physicalLevel: normalizeLevel(b.physicalLevel),
-      // "AUTO" = sin override manual (se usará el riesgo calculado).
       refereeRisk: ["LOW", "MEDIUM", "HIGH"].includes(b.refereeRisk) ? b.refereeRisk : "AUTO",
       playingStyle: b.playingStyle || null,
       tacticalNotes: b.tacticalNotes || null,
       setPieceNotes: b.setPieceNotes || null,
       assistantNotes: b.assistantNotes || null,
       generalNotes: b.generalNotes || null,
+      dataOrigin: "MANUAL",
     },
   });
-  return NextResponse.json(updated);
-}
-
-/** Elimina un equipo y sus dependencias (jugadores y técnicos van en cascada). */
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id;
-  // Partidos y notas no están en cascada: se limpian a mano para evitar errores de FK.
-  await prisma.match.deleteMany({ where: { OR: [{ homeTeamId: id }, { awayTeamId: id }] } });
-  await prisma.refereeNote.deleteMany({ where: { entityType: "TEAM", entityId: id } });
-  await prisma.team.delete({ where: { id } });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json(team);
 }

@@ -7,8 +7,8 @@ import { PROTEST_LABELS, PHYSICAL_LABELS, MATCH_STATUS_LABELS, type RiskLevel, t
 import Avatar from "@/components/Avatar";
 import RiskBadge from "@/components/RiskBadge";
 import StatCard from "@/components/StatCard";
-import PlayerCard from "@/components/PlayerCard";
-import StaffCard from "@/components/StaffCard";
+import SquadManager from "@/components/SquadManager";
+import StaffManager from "@/components/StaffManager";
 import NotesPanel from "@/components/NotesPanel";
 import AlertBox from "@/components/AlertBox";
 
@@ -105,25 +105,11 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
             <NoteBlock title="Observaciones generales" text={team.generalNotes} />
           </section>
 
-          {/* Plantilla */}
-          <section>
-            <h2 className="section-title mb-3">👥 Plantilla ({team.players.length})</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {team.players.map((p) => (
-                <PlayerCard key={p.id} player={p} href={`/players/${p.id}`} />
-              ))}
-            </div>
-          </section>
+          {/* Plantilla (añadir/editar/borrar a mano) */}
+          <SquadManager teamId={team.id} players={team.players} />
 
-          {/* Cuerpo técnico */}
-          <section>
-            <h2 className="section-title mb-3">🎽 Cuerpo técnico</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {team.staff.map((s) => (
-                <StaffCard key={s.id} staff={s} />
-              ))}
-            </div>
-          </section>
+          {/* Cuerpo técnico (añadir/editar/borrar a mano) */}
+          <StaffManager teamId={team.id} staff={team.staff} />
         </div>
 
         {/* Columna lateral */}
