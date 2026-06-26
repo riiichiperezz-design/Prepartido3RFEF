@@ -102,8 +102,8 @@ export default function PlayerForm({
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Field label="🟨 temp. anterior"><input type="number" className="input" value={form.previousSeasonYellowCards} onChange={(e) => set("previousSeasonYellowCards", Number(e.target.value))} /></Field>
-        <Field label="🟥 temp. anterior"><input type="number" className="input" value={form.previousSeasonRedCards} onChange={(e) => set("previousSeasonRedCards", Number(e.target.value))} /></Field>
+        <Field label="Amar. ant."><input type="number" className="input" value={form.previousSeasonYellowCards} onChange={(e) => set("previousSeasonYellowCards", Number(e.target.value))} /></Field>
+        <Field label="Rojas ant."><input type="number" className="input" value={form.previousSeasonRedCards} onChange={(e) => set("previousSeasonRedCards", Number(e.target.value))} /></Field>
         <Field label="Riesgo">
           <select className="input" value={form.refereeRisk} onChange={(e) => set("refereeRisk", e.target.value)}>
             <option value="AUTO">Automático</option>

@@ -1,16 +1,17 @@
 import clsx from "clsx";
+import { CheckIcon, AlertIcon, RiskIcon, ActivityIcon } from "./icons";
 
 export type AlertLevel = "info" | "low" | "medium" | "high";
 
 /**
- * Caja de alerta arbitral. Se usa en el briefing para destacar avisos
- * automáticos ("jugador con muchas amarillas", "equipo muy físico", etc.).
+ * Aviso arbitral con icono de trazo (sin emojis). Se usa en el briefing para
+ * destacar alertas automáticas.
  */
-const styles: Record<AlertLevel, { box: string; icon: string }> = {
-  info: { box: "bg-slate-50 border-slate-200 text-ink", icon: "ℹ️" },
-  low: { box: "bg-pitch-50 border-pitch-100 text-pitch-700", icon: "✅" },
-  medium: { box: "bg-amber-50 border-amber-200 text-amber-800", icon: "⚠️" },
-  high: { box: "bg-red-50 border-red-200 text-red-800", icon: "🚨" },
+const styles: Record<AlertLevel, { box: string; icon: string; Icon: typeof CheckIcon }> = {
+  info: { box: "bg-gray-50 border-ink-line text-ink", icon: "text-ink-muted", Icon: ActivityIcon },
+  low: { box: "bg-risk-lowtint border-risk-low/15 text-risk-low", icon: "text-risk-low", Icon: CheckIcon },
+  medium: { box: "bg-risk-mediumtint border-risk-medium/20 text-risk-medium", icon: "text-risk-medium", Icon: AlertIcon },
+  high: { box: "bg-risk-hightint border-risk-high/20 text-risk-high", icon: "text-risk-high", Icon: RiskIcon },
 };
 
 export default function AlertBox({
@@ -24,11 +25,11 @@ export default function AlertBox({
 }) {
   const s = styles[level];
   return (
-    <div className={clsx("flex gap-3 rounded-xl border p-3 text-sm", s.box)}>
-      <span className="text-base leading-5">{s.icon}</span>
-      <div className="min-w-0">
-        {title && <div className="font-semibold">{title}</div>}
-        {children && <div className="text-[13px] leading-snug opacity-90">{children}</div>}
+    <div className={clsx("flex gap-3 rounded-xl border p-3", s.box)}>
+      <s.Icon className={clsx("mt-0.5 h-4 w-4 shrink-0", s.icon)} strokeWidth={2} />
+      <div className="min-w-0 text-sm">
+        {title && <div className="font-semibold leading-snug">{title}</div>}
+        {children && <div className="mt-0.5 text-[13px] leading-snug text-ink-muted">{children}</div>}
       </div>
     </div>
   );

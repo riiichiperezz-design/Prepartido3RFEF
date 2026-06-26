@@ -5,6 +5,7 @@ import {
   deriveStyle,
   selectKeyPlayers,
   buildAlerts,
+  buildExecutiveSummary,
   globalRisk,
 } from "@/lib/briefing";
 import MatchBriefing from "@/components/MatchBriefing";
@@ -44,6 +45,7 @@ export default async function BriefingPage({
   const homeStyle = deriveStyle(home);
   const awayStyle = deriveStyle(away);
   const alerts = buildAlerts(home, away, homeKey, awayKey);
+  const executiveSummary = buildExecutiveSummary(home, away, alerts);
 
   // Instrucciones previas guardadas (si existe el partido)
   const existing = await prisma.match.findFirst({
@@ -67,10 +69,14 @@ export default async function BriefingPage({
       homeStyle={homeStyle}
       awayStyle={awayStyle}
       alerts={alerts}
+      executiveSummary={executiveSummary}
       globalRisk={globalRisk(home, away)}
       date={date}
       round={round}
-      stadium={home.stadium ?? undefined}
+      stadium={existing?.stadium ?? home.stadium ?? undefined}
+      referee={existing?.referee ?? undefined}
+      assistant1={existing?.assistant1 ?? undefined}
+      assistant2={existing?.assistant2 ?? undefined}
       initialInstructions={initialInstructions}
     />
   );

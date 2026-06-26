@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import { TEMPLATES, templateCsv } from "@/lib/templates";
 import type { ImportType } from "@/lib/import";
 import AlertBox from "./AlertBox";
+import { DownloadIcon } from "./icons";
 
 type Row = Record<string, string>;
 
@@ -118,7 +119,8 @@ export default function ImportWizard({
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button onClick={downloadTemplate} className="btn-accent">
-            ⬇️ Descargar plantilla {TYPE_LABELS[type].toLowerCase()}
+            <DownloadIcon className="h-4 w-4" strokeWidth={2} />
+            Descargar plantilla {TYPE_LABELS[type].toLowerCase()}
           </button>
           <span className="text-xs text-ink-muted">
             Columnas: {columns.join(", ")}
@@ -149,8 +151,8 @@ export default function ImportWizard({
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="section-title">3. Previsualización ({rows.length} filas)</h2>
             <div className="flex gap-2 text-xs">
-              <span className="chip bg-pitch-100 text-pitch-700">{newCount} nuevos</span>
-              <span className="chip bg-amber-100 text-amber-700">{updateCount} a actualizar</span>
+              <span className="chip bg-risk-lowtint text-risk-low">{newCount} nuevos</span>
+              <span className="chip bg-risk-mediumtint text-risk-medium">{updateCount} a actualizar</span>
             </div>
           </div>
 
@@ -170,7 +172,7 @@ export default function ImportWizard({
                   return (
                     <tr key={i}>
                       <td className="px-2 py-1.5">
-                        <span className={`chip ${isDup ? "bg-amber-100 text-amber-700" : "bg-pitch-100 text-pitch-700"}`}>
+                        <span className={`chip ${isDup ? "bg-risk-mediumtint text-risk-medium" : "bg-risk-lowtint text-risk-low"}`}>
                           {isDup ? "actualizar" : "nuevo"}
                         </span>
                       </td>
@@ -203,8 +205,8 @@ export default function ImportWizard({
         <div className="card p-5">
           <h2 className="section-title mb-3">Resultado</h2>
           <div className="flex flex-wrap gap-2">
-            <span className="chip bg-pitch-100 text-pitch-700">{result.created} creados</span>
-            <span className="chip bg-amber-100 text-amber-700">{result.updated} actualizados</span>
+            <span className="chip bg-risk-lowtint text-risk-low">{result.created} creados</span>
+            <span className="chip bg-risk-mediumtint text-risk-medium">{result.updated} actualizados</span>
             <span className="chip bg-slate-100 text-ink-muted">{result.errors.length} errores</span>
           </div>
           {result.errors.length > 0 && (

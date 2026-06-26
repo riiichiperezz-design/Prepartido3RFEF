@@ -129,9 +129,9 @@ export default function PlayersExplorer({
                 <th className="px-3 py-3">Equipo</th>
                 <th className="px-3 py-3">Pos.</th>
                 <th className="px-3 py-3 text-center">Edad</th>
-                <th className="px-3 py-3 text-center">⚽</th>
-                <th className="px-3 py-3 text-center">🟨</th>
-                <th className="px-3 py-3 text-center">🟥</th>
+                <th className="px-3 py-3 text-center">Goles</th>
+                <th className="px-3 py-3 text-center">Amar.</th>
+                <th className="px-3 py-3 text-center">Rojas</th>
                 <th className="px-3 py-3 text-center">Etiquetas</th>
                 <th className="px-3 py-3 text-center">Riesgo</th>
               </tr>

@@ -11,6 +11,7 @@ import SquadManager from "@/components/SquadManager";
 import StaffManager from "@/components/StaffManager";
 import NotesPanel from "@/components/NotesPanel";
 import AlertBox from "@/components/AlertBox";
+import { BackIcon, EditIcon, BriefingIcon, CalendarIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -32,35 +33,35 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
 
   return (
     <div className="space-y-6">
-      <Link href="/teams" className="text-sm text-ink-muted hover:underline">
-        ← Volver a equipos
+      <Link href="/teams" className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
+        <BackIcon className="h-4 w-4" /> Volver a equipos
       </Link>
 
       {/* Cabecera */}
       <div className="card overflow-hidden">
         <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
-          <Avatar name={team.shortName ?? team.name} src={team.crestUrl} size="xl" square />
+          <Avatar name={team.shortName ?? team.name} src={team.crestUrl} size="xl" square variant="team" />
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-extrabold text-ink">{team.name}</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-ink">{team.name}</h1>
               <RiskBadge level={team.effectiveRisk} />
-              <span className="chip bg-slate-100 text-ink-muted">{DATA_ORIGIN_LABELS[team.dataOrigin] ?? team.dataOrigin}</span>
+              <span className="chip bg-gray-100 text-ink-muted">{DATA_ORIGIN_LABELS[team.dataOrigin] ?? team.dataOrigin}</span>
             </div>
             <p className="mt-1 text-sm text-ink-muted">
               {team.city} · {team.stadium}
               {team.stadiumAddress ? ` (${team.stadiumAddress})` : ""}
             </p>
-            <p className="text-xs text-slate-400">
-              {team.category} · {team.currentPosition ? `${team.currentPosition}º clasificado` : "Sin clasificación"}
+            <p className="text-xs text-gray-400">
+              {team.category} · {team.currentPosition ? `${team.currentPosition}.º clasificado` : "Sin clasificación"}
               {team.seasonsInCategory ? ` · ${team.seasonsInCategory} temporadas en la categoría` : ""}
             </p>
           </div>
           <div className="flex gap-2">
             <Link href={`/teams/${team.id}/edit`} className="btn-ghost">
-              ✏️ Editar
+              <EditIcon className="h-4 w-4" /> Editar
             </Link>
             <Link href={`/match?home=${team.id}`} className="btn-primary">
-              Preparar partido
+              <BriefingIcon className="h-4 w-4" /> Preparar partido
             </Link>
           </div>
         </div>
@@ -92,7 +93,7 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
         <div className="space-y-6 lg:col-span-2">
           {/* Estilo de juego */}
           <section className="card p-5">
-            <h2 className="section-title mb-3">⚽ Estilo de juego y notas tácticas</h2>
+            <h2 className="section-title mb-3">Estilo de juego y notas tácticas</h2>
             <div className="grid gap-3 sm:grid-cols-3">
               <Pill label="Protesta" value={PROTEST_LABELS[team.protestLevel as RiskLevel]} />
               <Pill label="Físico" value={PHYSICAL_LABELS[team.physicalLevel as RiskLevel]} />
@@ -118,20 +119,23 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
 
           {/* Historial de partidos */}
           <section className="card p-4">
-            <h3 className="section-title mb-3 text-base">📅 Partidos arbitrados / programados</h3>
+            <div className="mb-3 flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4 text-ink-muted" strokeWidth={2} />
+              <h3 className="section-title">Partidos arbitrados / programados</h3>
+            </div>
             {matches.length === 0 ? (
-              <p className="text-sm text-slate-400">Sin partidos registrados.</p>
+              <p className="text-sm text-gray-400">Sin partidos registrados.</p>
             ) : (
               <ul className="space-y-2">
                 {matches.map((m) => (
-                  <li key={m.id} className="rounded-lg bg-slate-50 p-2 text-sm">
+                  <li key={m.id} className="rounded-lg bg-gray-50 p-2 text-sm">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-ink">
                         {m.homeTeam.shortName ?? m.homeTeam.name} - {m.awayTeam.shortName ?? m.awayTeam.name}
                       </span>
-                      <span className="chip bg-white text-ink-muted">{MATCH_STATUS_LABELS[m.status as MatchStatus] ?? m.status}</span>
+                      <span className="chip bg-white text-ink-muted ring-1 ring-ink-line">{MATCH_STATUS_LABELS[m.status as MatchStatus] ?? m.status}</span>
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-gray-400">
                       {m.round} · {formatDate(m.date)}
                     </div>
                   </li>
@@ -147,8 +151,8 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
 
 function Pill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 text-center">
-      <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
+    <div className="rounded-xl bg-gray-50 p-3 text-center">
+      <div className="text-[10px] uppercase tracking-wide text-gray-400">{label}</div>
       <div className="font-semibold text-ink">{value}</div>
     </div>
   );
@@ -158,8 +162,8 @@ function NoteBlock({ title, text }: { title: string; text?: string | null }) {
   if (!text) return null;
   return (
     <div className="mt-3">
-      <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{title}</div>
-      <p className="text-sm text-slate-700">{text}</p>
+      <div className="eyebrow">{title}</div>
+      <p className="mt-0.5 text-sm text-ink">{text}</p>
     </div>
   );
 }

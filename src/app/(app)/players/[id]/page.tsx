@@ -9,6 +9,7 @@ import RiskBadge from "@/components/RiskBadge";
 import StatCard from "@/components/StatCard";
 import AlertBox from "@/components/AlertBox";
 import NotesPanel from "@/components/NotesPanel";
+import { BackIcon, EditIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,8 @@ export default async function PlayerDetailPage({ params }: { params: { id: strin
 
   return (
     <div className="space-y-6">
-      <Link href={`/teams/${player.teamId}`} className="text-sm text-ink-muted hover:underline">
-        ← {player.team.name}
+      <Link href={`/teams/${player.teamId}`} className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
+        <BackIcon className="h-4 w-4" /> {player.team.name}
       </Link>
 
       <div className="card p-5">
@@ -38,7 +39,7 @@ export default async function PlayerDetailPage({ params }: { params: { id: strin
           <Avatar name={player.name} src={player.photoUrl} size="xl" />
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-extrabold text-ink">{player.name}</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-ink">{player.name}</h1>
               {player.dorsal != null && <span className="chip bg-ink text-white">Dorsal {player.dorsal}</span>}
               <RiskBadge level={enriched.effectiveRisk} />
             </div>
@@ -58,7 +59,7 @@ export default async function PlayerDetailPage({ params }: { params: { id: strin
           </div>
           <div className="flex gap-2">
             <Link href={`/players/${player.id}/edit`} className="btn-ghost">
-              ✏️ Editar
+              <EditIcon className="h-4 w-4" /> Editar
             </Link>
           </div>
         </div>
@@ -89,10 +90,10 @@ export default async function PlayerDetailPage({ params }: { params: { id: strin
           <div className="card p-5">
             <h2 className="section-title mb-3">Histórico disciplinario</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard label="🟨 Esta temp." value={player.yellowCards} tone="warn" />
-              <StatCard label="🟥 Esta temp." value={player.redCards} tone="bad" />
-              <StatCard label="🟨 Temp. anterior" value={player.previousSeasonYellowCards} />
-              <StatCard label="🟥 Temp. anterior" value={player.previousSeasonRedCards} />
+              <StatCard label="Amar. esta temp." value={player.yellowCards} tone="warn" />
+              <StatCard label="Rojas esta temp." value={player.redCards} tone="bad" />
+              <StatCard label="Amar. temp. anterior" value={player.previousSeasonYellowCards} />
+              <StatCard label="Rojas temp. anterior" value={player.previousSeasonRedCards} />
             </div>
           </div>
 

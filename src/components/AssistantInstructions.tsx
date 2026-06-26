@@ -8,8 +8,8 @@ export interface Instructions {
   benches: string;
   areas: string;
   offside: string;
-  protests: string;
   setPieces: string;
+  communication: string;
   finalRemarks: string;
 }
 
@@ -19,8 +19,8 @@ const FIELDS: { key: keyof Instructions; label: string; placeholder: string }[] 
   { key: "benches", label: "Banquillos", placeholder: "Control de zonas técnicas, técnicos a vigilar..." },
   { key: "areas", label: "Áreas", placeholder: "Atención a forcejeos, agarrones en córner..." },
   { key: "offside", label: "Fuera de juego", placeholder: "Línea defensiva, ritmo de subida..." },
-  { key: "protests", label: "Protestas", placeholder: "Capitanes, jugadores a controlar..." },
   { key: "setPieces", label: "Balón parado", placeholder: "Reparto en córners y faltas peligrosas..." },
+  { key: "communication", label: "Comunicación arbitral", placeholder: "Señales acordadas, uso de intercom/banderín..." },
   { key: "finalRemarks", label: "Observaciones finales", placeholder: "Cualquier otra indicación..." },
 ];
 
@@ -40,7 +40,7 @@ export default function AssistantInstructions({
 }) {
   const empty: Instructions = {
     assistant1: "", assistant2: "", benches: "", areas: "",
-    offside: "", protests: "", setPieces: "", finalRemarks: "",
+    offside: "", setPieces: "", communication: "", finalRemarks: "",
   };
   const [data, setData] = useState<Instructions>({ ...empty, ...initial });
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
@@ -63,9 +63,9 @@ export default function AssistantInstructions({
   return (
     <div className="card p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="section-title">🧭 Instrucciones para asistentes</h3>
+        <h3 className="section-title">Instrucciones para asistentes</h3>
         <button onClick={save} disabled={state === "saving"} className="btn-primary no-print disabled:opacity-50">
-          {state === "saving" ? "Guardando..." : state === "saved" ? "✓ Guardado" : "Guardar"}
+          {state === "saving" ? "Guardando..." : state === "saved" ? "Guardado" : "Guardar"}
         </button>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

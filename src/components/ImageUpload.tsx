@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Avatar from "./Avatar";
+import { ImageIcon } from "./icons";
 
 /**
  * Subida de imagen (escudo de equipo o foto de jugador).
@@ -56,7 +57,8 @@ export default function ImageUpload({
             className="btn-ghost text-xs"
             disabled={busy}
           >
-            {busy ? "Procesando..." : "📷 Subir imagen"}
+            <ImageIcon className="h-3.5 w-3.5" strokeWidth={2} />
+            {busy ? "Procesando..." : "Subir imagen"}
           </button>
           {value && (
             <button type="button" onClick={() => onChange("")} className="btn-ghost text-xs text-red-500">

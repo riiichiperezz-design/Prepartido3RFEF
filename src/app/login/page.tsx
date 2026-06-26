@@ -8,11 +8,11 @@ export default function LoginPage({
     <div className="flex min-h-screen items-center justify-center bg-ink px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center text-white">
-          <div className="text-xs font-semibold uppercase tracking-widest text-pitch-500">
-            Prepartido
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+            Prepartido · Análisis arbitral
           </div>
-          <h1 className="text-3xl font-extrabold">3ª RFEF · Grupo 14</h1>
-          <p className="mt-1 text-sm text-slate-400">Herramienta privada de preparación arbitral</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">Tercera Federación · G14</h1>
+          <p className="mt-1 text-sm text-gray-400">Herramienta privada de preparación de partidos</p>
         </div>
 
         <form action="/api/auth/login" method="post" className="card space-y-4 p-6">

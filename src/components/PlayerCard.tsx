@@ -6,13 +6,7 @@ import { POSITION_LABELS, type Position } from "@/lib/enums";
 import { parseList } from "@/lib/format";
 
 /** Tarjeta visual de jugador. */
-export default function PlayerCard({
-  player,
-  href,
-}: {
-  player: EnrichedPlayer;
-  href?: string;
-}) {
+export default function PlayerCard({ player, href }: { player: EnrichedPlayer; href?: string }) {
   const pos = player.position ? POSITION_LABELS[player.position as Position] ?? player.position : "—";
   const tags = parseList(player.behaviourTags);
 
@@ -22,13 +16,13 @@ export default function PlayerCard({
         <div className="relative">
           <Avatar name={player.name} src={player.photoUrl} size="md" />
           {player.dorsal != null && (
-            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-[10px] font-bold text-white ring-2 ring-white">
+            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-[10px] font-semibold text-white ring-2 ring-white">
               {player.dorsal}
             </span>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate font-semibold text-ink">{player.name}</div>
+          <div className="truncate font-medium text-ink">{player.name}</div>
           <div className="text-xs text-ink-muted">
             {pos}
             {player.age ? ` · ${player.age} años` : ""}
@@ -46,9 +40,7 @@ export default function PlayerCard({
       {tags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1">
           {tags.map((t) => (
-            <span key={t} className="chip bg-slate-100 text-ink-muted">
-              {t}
-            </span>
+            <span key={t} className="chip bg-gray-100 text-ink-muted">{t}</span>
           ))}
         </div>
       )}
@@ -56,9 +48,7 @@ export default function PlayerCard({
   );
 
   return href ? (
-    <Link href={href} className="block h-full">
-      {inner}
-    </Link>
+    <Link href={href} className="block h-full">{inner}</Link>
   ) : (
     inner
   );
@@ -69,11 +59,11 @@ function riskShort(level: "LOW" | "MEDIUM" | "HIGH") {
 }
 
 function Stat({ value, label, tone }: { value: number; label: string; tone?: "warn" | "bad" }) {
-  const color = tone === "warn" ? "text-amber-600" : tone === "bad" ? "text-red-600" : "text-ink";
+  const color = tone === "warn" ? "text-risk-medium" : tone === "bad" ? "text-risk-high" : "text-ink";
   return (
-    <div className="rounded-lg bg-slate-50 py-1.5">
-      <div className={`font-bold ${color}`}>{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
+    <div className="rounded-lg bg-gray-50 py-1.5">
+      <div className={`font-semibold ${color}`}>{value}</div>
+      <div className="text-[10px] uppercase tracking-wide text-gray-400">{label}</div>
     </div>
   );
 }

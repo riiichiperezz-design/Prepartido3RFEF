@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Avatar from "./Avatar";
+import { BriefingIcon } from "./icons";
 
 interface TeamOption {
   id: string;
@@ -100,12 +101,13 @@ export default function MatchSetup({
       <button
         type="submit"
         disabled={!home || !away || home === away}
-        className="btn-accent w-full py-4 text-lg shadow-card disabled:opacity-40"
+        className="btn-accent w-full py-3.5 text-base shadow-card disabled:opacity-40"
       >
-        ⚡ Generar briefing arbitral
+        <BriefingIcon className="h-5 w-5" strokeWidth={2} />
+        Generar briefing arbitral
       </button>
       {home && away && home === away && (
-        <p className="text-center text-sm text-red-600">El equipo local y el visitante deben ser distintos.</p>
+        <p className="text-center text-sm text-risk-high">El equipo local y el visitante deben ser distintos.</p>
       )}
     </form>
   );

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { EnrichedPlayer } from "@/lib/data";
 import PlayerCard from "./PlayerCard";
 import PlayerForm from "./PlayerForm";
+import { SquadIcon, PlusIcon, EditIcon, DeleteIcon, CloseIcon } from "./icons";
 
 /**
  * Gestión de la plantilla desde la ficha del equipo:
@@ -30,9 +31,13 @@ export default function SquadManager({
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="section-title">👥 Plantilla ({players.length})</h2>
+        <div className="flex items-center gap-2">
+          <SquadIcon className="h-[18px] w-[18px] text-ink-muted" strokeWidth={2} />
+          <h2 className="text-lg font-semibold tracking-tight text-ink">Plantilla ({players.length})</h2>
+        </div>
         <button onClick={() => setAdding((a) => !a)} className="btn-ghost text-xs">
-          {adding ? "Cancelar" : "+ Añadir jugador"}
+          {adding ? <CloseIcon className="h-3.5 w-3.5" /> : <PlusIcon className="h-3.5 w-3.5" />}
+          {adding ? "Cancelar" : "Añadir jugador"}
         </button>
       </div>
 
@@ -54,11 +59,11 @@ export default function SquadManager({
             <div key={p.id} className="space-y-1">
               <PlayerCard player={p} href={`/players/${p.id}`} />
               <div className="flex justify-end gap-3 px-1 text-xs">
-                <button onClick={() => setEditingId(p.id)} className="text-ink-muted hover:underline">
-                  ✏️ Editar
+                <button onClick={() => setEditingId(p.id)} className="inline-flex items-center gap-1 text-ink-muted hover:text-ink">
+                  <EditIcon className="h-3.5 w-3.5" /> Editar
                 </button>
-                <button onClick={() => remove(p.id, p.name)} className="text-red-500 hover:underline">
-                  🗑️ Borrar
+                <button onClick={() => remove(p.id, p.name)} className="inline-flex items-center gap-1 text-risk-high hover:underline">
+                  <DeleteIcon className="h-3.5 w-3.5" /> Borrar
                 </button>
               </div>
             </div>

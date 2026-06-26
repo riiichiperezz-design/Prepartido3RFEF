@@ -84,6 +84,28 @@ export function selectKeyPlayers(
   };
 }
 
+/**
+ * Lista deduplicada de jugadores a vigilar de un equipo, con una nota breve del
+ * motivo (riesgo, tarjetas, expulsiones, nota propia). Pensada para mostrarse
+ * con foto en el briefing.
+ */
+export function playersToWatch(
+  key: KeyPlayers,
+): { player: EnrichedPlayer; note: string }[] {
+  const map = new Map<string, { player: EnrichedPlayer; note: string }>();
+  const add = (player: EnrichedPlayer, note: string) => {
+    if (map.has(player.id)) return;
+    map.set(player.id, { player, note });
+  };
+
+  key.withImportantNotes.forEach(({ player, note }) => add(player, note));
+  key.withReds.forEach((p) => add(p, `Expulsión esta temporada (${p.redCards} roja/s).`));
+  key.risky.forEach((p) => add(p, p.riskReasons[0] ?? "Marcado como jugador de riesgo."));
+  key.mostBooked.forEach((p) => add(p, `Acumula ${p.yellowCards} amarillas.`));
+
+  return Array.from(map.values()).slice(0, 6);
+}
+
 /** Genera las alertas automáticas para el partido (sección F). */
 export function buildAlerts(
   home: EnrichedTeam,
@@ -191,4 +213,55 @@ export function globalRisk(home: EnrichedTeam, away: EnrichedTeam): RiskLevel {
   return RISK_ORDER[home.effectiveRisk] >= RISK_ORDER[away.effectiveRisk]
     ? home.effectiveRisk
     : away.effectiveRisk;
+}
+
+/**
+ * Resumen ejecutivo: 3-5 puntos críticos derivados de los datos, para tener una
+ * foto rápida del partido al inicio del briefing.
+ */
+export function buildExecutiveSummary(
+  home: EnrichedTeam,
+  away: EnrichedTeam,
+  alerts: BriefingAlert[],
+): string[] {
+  const points: string[] = [];
+  const hName = home.shortName ?? home.name;
+  const aName = away.shortName ?? away.name;
+
+  // Protestas
+  const protesters = [home, away].filter((t) => t.protestLevel === "HIGH");
+  if (protesters.length === 2) {
+    points.push("Ambos equipos protestan mucho: marcar autoridad pronto y gestionar a los capitanes.");
+  } else if (protesters.length === 1) {
+    const t = protesters[0];
+    points.push(`${t.shortName ?? t.name} es un equipo muy protestón: cortar las quejas desde el inicio.`);
+  }
+
+  // Físico
+  const physical = [home, away].filter((t) => t.physicalLevel === "HIGH");
+  if (physical.length > 0) {
+    points.push(`Partido físico (${physical.map((t) => t.shortName ?? t.name).join(" y ")}): uniformidad en el criterio de faltas y duelos.`);
+  }
+
+  // Jugadores con roja esta temporada
+  const reds = [...home.players, ...away.players].filter((p) => p.redCards > 0);
+  if (reds.length > 0) {
+    points.push(`Atención a ${reds.length} jugador(es) con expulsión esta temporada en duelos y entradas.`);
+  }
+
+  // Balón parado
+  if (home.setPieceNotes || away.setPieceNotes) {
+    points.push("Vigilar las acciones a balón parado (agarrones y empujones en el área).");
+  }
+
+  // Banquillos calientes
+  const hotBench = [home, away].filter((t) => t.staff.some((s) => s.refereeRisk === "HIGH"));
+  if (hotBench.length > 0) {
+    points.push(`Banquillo a vigilar: ${hotBench.map((t) => t.shortName ?? t.name).join(" y ")} (zona técnica).`);
+  }
+
+  if (points.length === 0) {
+    points.push(`Partido sin factores de especial atención según los datos actuales (${hName} vs ${aName}).`);
+  }
+  return points.slice(0, 5);
 }

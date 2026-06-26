@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { EnrichedTeam } from "@/lib/data";
 import type { BriefingAlert, KeyPlayers, StyleFlags } from "@/lib/briefing";
 import type { RiskLevel } from "@/lib/enums";
-import { PROTEST_LABELS } from "@/lib/enums";
+import { PROTEST_LABELS, RISK_LABELS } from "@/lib/enums";
 import { formatDate } from "@/lib/format";
 import Avatar from "./Avatar";
 import RiskBadge from "./RiskBadge";
@@ -11,6 +11,7 @@ import KeyPlayersSection from "./KeyPlayersSection";
 import AlertBox from "./AlertBox";
 import AssistantInstructions, { type Instructions } from "./AssistantInstructions";
 import PDFExportButton from "./PDFExportButton";
+import { BackIcon, CheckIcon, RiskIcon, NoteIcon } from "./icons";
 
 interface Props {
   home: EnrichedTeam;
@@ -20,117 +21,185 @@ interface Props {
   homeStyle: StyleFlags;
   awayStyle: StyleFlags;
   alerts: BriefingAlert[];
+  executiveSummary: string[];
   globalRisk: RiskLevel;
   date?: string;
   round?: string;
   stadium?: string;
+  referee?: string;
+  assistant1?: string;
+  assistant2?: string;
   initialInstructions?: Partial<Instructions>;
 }
 
-/** Briefing arbitral completo (secciones A–H). */
+/** Briefing arbitral profesional (dossier prepartido). */
 export default function MatchBriefing(props: Props) {
   const { home, away, homeKey, awayKey, homeStyle, awayStyle, alerts, globalRisk } = props;
+  const personalNotes = [...home.briefingNotes, ...away.briefingNotes];
 
   return (
-    <div className="print-page space-y-6">
+    <div className="print-page space-y-5">
       {/* Barra de acciones (no se imprime) */}
       <div className="no-print flex items-center justify-between">
-        <Link href="/match" className="text-sm text-ink-muted hover:underline">
-          ← Cambiar partido
+        <Link href="/match" className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
+          <BackIcon className="h-4 w-4" /> Cambiar partido
         </Link>
         <PDFExportButton />
       </div>
 
-      {/* A. Portada */}
+      {/* 1. Portada */}
       <section className="card overflow-hidden">
-        <div className="bg-ink px-6 py-3 text-center text-xs font-semibold uppercase tracking-widest text-pitch-500">
-          Briefing arbitral · 3ª RFEF Grupo 14
+        <div className="flex items-center justify-between border-b border-ink-line px-6 py-2.5">
+          <span className="eyebrow">Dossier arbitral · Prepartido</span>
+          <span className="text-xs text-ink-muted">Tercera Federación · Grupo 14</span>
         </div>
         <div className="grid grid-cols-3 items-center gap-2 p-6">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <Avatar name={home.shortName ?? home.name} src={home.crestUrl} size="xl" square />
-            <div className="font-bold text-ink">{home.name}</div>
-            <RiskBadge level={home.effectiveRisk} size="sm" />
-            <span className="text-[10px] uppercase tracking-wide text-slate-400">Local</span>
-          </div>
+          <TeamHead team={home} role="Local" />
           <div className="text-center">
-            <div className="text-3xl font-black text-ink-muted">VS</div>
-            <div className="mt-2 text-sm font-semibold text-ink">{props.round ?? "Jornada"}</div>
+            <div className="text-2xl font-semibold tracking-tight text-gray-300">VS</div>
+            <div className="mt-2 text-sm font-medium text-ink">{props.round ?? "Jornada"}</div>
             <div className="text-xs text-ink-muted">{formatDate(props.date)}</div>
-            <div className="text-xs text-slate-400">{props.stadium ?? home.stadium}</div>
-            <div className="mt-3">
-              <div className="text-[10px] uppercase tracking-wide text-slate-400">Riesgo global</div>
-              <RiskBadge level={globalRisk} />
-            </div>
+            <div className="text-xs text-gray-400">{props.stadium ?? home.stadium}</div>
           </div>
-          <div className="flex flex-col items-center gap-2 text-center">
-            <Avatar name={away.shortName ?? away.name} src={away.crestUrl} size="xl" square />
-            <div className="font-bold text-ink">{away.name}</div>
-            <RiskBadge level={away.effectiveRisk} size="sm" />
-            <span className="text-[10px] uppercase tracking-wide text-slate-400">Visitante</span>
+          <TeamHead team={away} role="Visitante" />
+        </div>
+        <div className="grid grid-cols-2 gap-px border-t border-ink-line bg-ink-line text-sm sm:grid-cols-4">
+          <Meta label="Árbitro" value={props.referee || "(por asignar)"} />
+          <Meta label="Asistente 1" value={props.assistant1 || "(por asignar)"} />
+          <Meta label="Asistente 2" value={props.assistant2 || "(por asignar)"} />
+          <Meta label="Riesgo global" value={<RiskBadge level={globalRisk} size="sm" />} />
+        </div>
+      </section>
+
+      {/* 2. Resumen ejecutivo */}
+      <section className="card p-5">
+        <SectionHeader n={1} title="Resumen ejecutivo" />
+        <div className="mt-3 grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-ink-line p-4 text-center">
+            <p className="eyebrow">Riesgo global del partido</p>
+            <div className="mt-2 flex justify-center"><RiskBadge level={globalRisk} /></div>
+            <p className="mt-2 text-xs text-ink-muted">
+              Local {RISK_LABELS[home.effectiveRisk]} · Visitante {RISK_LABELS[away.effectiveRisk]}
+            </p>
+          </div>
+          <div className="md:col-span-2">
+            <p className="eyebrow mb-2">Puntos críticos</p>
+            <ul className="space-y-1.5">
+              {props.executiveSummary.map((p, i) => (
+                <li key={i} className="flex gap-2 text-sm text-ink">
+                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2} />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* F. Alertas (arriba por relevancia) */}
-      <section className="space-y-2">
-        <h2 className="section-title">🚨 Alertas arbitrales</h2>
-        <div className="grid gap-2 md:grid-cols-2">
-          {alerts.map((a, i) => (
-            <AlertBox key={i} level={a.level} title={a.title}>
-              {a.detail}
-            </AlertBox>
-          ))}
-        </div>
+      {/* 3. Comparativa de equipos */}
+      <section>
+        <SectionHeader n={2} title="Comparativa de equipos" />
+        <div className="mt-3"><TeamComparison home={home} away={away} /></div>
       </section>
 
-      {/* B. Comparativa rápida */}
+      {/* 4. Jugadores a vigilar */}
       <section>
-        <h2 className="section-title mb-2">📊 Comparativa rápida</h2>
-        <TeamComparison home={home} away={away} />
-      </section>
-
-      {/* C. Jugadores clave */}
-      <section>
-        <h2 className="section-title mb-2">⭐ Jugadores clave</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <SectionHeader n={3} title="Jugadores a vigilar" />
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
           <KeyPlayersSection team={home} kp={homeKey} />
           <KeyPlayersSection team={away} kp={awayKey} />
         </div>
       </section>
 
-      {/* E. Estilo de juego */}
+      {/* 5. Cuerpo técnico */}
       <section>
-        <h2 className="section-title mb-2">⚽ Estilo de juego</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <StyleCard team={home} style={homeStyle} />
-          <StyleCard team={away} style={awayStyle} />
-        </div>
-      </section>
-
-      {/* D. Cuerpo técnico */}
-      <section>
-        <h2 className="section-title mb-2">🎽 Cuerpo técnico</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <SectionHeader n={4} title="Cuerpo técnico" />
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
           <StaffBriefing team={home} />
           <StaffBriefing team={away} />
         </div>
       </section>
 
-      {/* G. Instrucciones para asistentes */}
+      {/* 6. Análisis táctico */}
       <section>
-        <AssistantInstructions
-          home={home.id}
-          away={away.id}
-          date={props.date}
-          round={props.round}
-          initial={props.initialInstructions}
-        />
+        <SectionHeader n={5} title="Análisis táctico" />
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <StyleCard team={home} style={homeStyle} />
+          <StyleCard team={away} style={awayStyle} />
+        </div>
       </section>
 
-      <p className="no-print text-center text-xs text-slate-400">
-        Generado localmente · Datos privados · Esta herramienta solo ayuda a preparar; no predice incidencias.
+      {/* 7. Alertas */}
+      <section>
+        <SectionHeader n={6} title="Alertas arbitrales" />
+        <div className="mt-3 grid gap-2 md:grid-cols-2">
+          {alerts.map((a, i) => (
+            <AlertBox key={i} level={a.level} title={a.title}>{a.detail}</AlertBox>
+          ))}
+        </div>
+      </section>
+
+      {/* 8. Instrucciones para asistentes */}
+      <section className="print-break">
+        <SectionHeader n={7} title="Instrucciones para asistentes" />
+        <div className="mt-3">
+          <AssistantInstructions
+            home={home.id}
+            away={away.id}
+            date={props.date}
+            round={props.round}
+            initial={props.initialInstructions}
+          />
+        </div>
+      </section>
+
+      {/* 9. Notas personales */}
+      {personalNotes.length > 0 && (
+        <section>
+          <SectionHeader n={8} title="Notas personales" />
+          <div className="mt-3 card divide-y divide-ink-line">
+            {personalNotes.map((n) => (
+              <div key={n.id} className="flex gap-3 p-3">
+                <NoteIcon className="mt-0.5 h-4 w-4 shrink-0 text-ink-muted" strokeWidth={2} />
+                <p className="text-sm text-ink">{n.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <p className="text-center text-xs text-gray-400">
+        Documento generado localmente · Uso privado · Esta herramienta solo ayuda a preparar el partido; no predice incidencias.
       </p>
+    </div>
+  );
+}
+
+function TeamHead({ team, role }: { team: EnrichedTeam; role: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2 text-center">
+      <Avatar name={team.shortName ?? team.name} src={team.crestUrl} size="xl" square variant="team" />
+      <div className="font-semibold tracking-tight text-ink">{team.name}</div>
+      <RiskBadge level={team.effectiveRisk} size="sm" />
+      <span className="eyebrow">{role}</span>
+    </div>
+  );
+}
+
+function Meta({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="bg-white px-4 py-3">
+      <div className="eyebrow">{label}</div>
+      <div className="mt-0.5 text-sm font-medium text-ink">{value}</div>
+    </div>
+  );
+}
+
+function SectionHeader({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-ink text-xs font-semibold text-white">{n}</span>
+      <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>
     </div>
   );
 }
@@ -148,61 +217,62 @@ const STYLE_ITEMS: { key: keyof StyleFlags; label: string }[] = [
 function StyleCard({ team, style }: { team: EnrichedTeam; style: StyleFlags }) {
   return (
     <div className="card p-4">
-      <h3 className="section-title mb-3 text-base">{team.shortName ?? team.name}</h3>
+      <h3 className="section-title mb-3">{team.shortName ?? team.name}</h3>
       <div className="grid grid-cols-2 gap-2">
         {STYLE_ITEMS.map((it) => {
           const on = style[it.key];
           return (
             <div
               key={it.key}
-              className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium ${
-                on ? "bg-pitch-50 text-pitch-700" : "bg-slate-50 text-slate-400"
-              }`}
+              className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs ${on ? "bg-accent/10 font-medium text-accent" : "bg-gray-50 text-gray-400"}`}
             >
-              <span>{on ? "✓" : "·"}</span>
+              {on ? <CheckIcon className="h-3.5 w-3.5" strokeWidth={2.5} /> : <span className="h-3.5 w-3.5 text-center">·</span>}
               {it.label}
             </div>
           );
         })}
       </div>
-      {team.playingStyle && <p className="mt-3 text-sm text-slate-700">{team.playingStyle}</p>}
+      {team.playingStyle && <p className="mt-3 text-sm text-ink">{team.playingStyle}</p>}
       {team.tacticalNotes && <p className="mt-2 text-xs text-ink-muted">{team.tacticalNotes}</p>}
+      {team.setPieceNotes && (
+        <p className="mt-2 text-xs text-ink-muted"><span className="font-medium text-ink">Balón parado:</span> {team.setPieceNotes}</p>
+      )}
     </div>
   );
 }
 
 function StaffBriefing({ team }: { team: EnrichedTeam }) {
-  const coach = team.staff.find((s) => (s.role ?? "").toLowerCase().includes("entrenador") && !(s.role ?? "").toLowerCase().includes("segundo"))
-    ?? team.staff[0];
+  const coach =
+    team.staff.find((s) => (s.role ?? "").toLowerCase().includes("entrenador") && !(s.role ?? "").toLowerCase().includes("segundo")) ??
+    team.staff[0];
   return (
     <div className="card p-4">
-      <h3 className="section-title mb-3 text-base">{team.shortName ?? team.name}</h3>
+      <h3 className="section-title mb-3">{team.shortName ?? team.name}</h3>
       {!coach ? (
-        <p className="text-sm text-slate-400">Sin cuerpo técnico registrado.</p>
+        <p className="text-sm text-gray-400">Sin cuerpo técnico registrado.</p>
       ) : (
-        <div className="space-y-2 text-sm">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-ink">{coach.name}</span>
-            <RiskBadge level={(coach.refereeRisk as RiskLevel) ?? "LOW"} size="sm" />
-          </div>
-          <div className="text-xs text-ink-muted">{coach.role ?? "Entrenador"}</div>
-          {coach.previousTeams && (
-            <div className="text-xs text-slate-500">
-              <span className="font-medium">Historial:</span> {coach.previousTeams}
+        <div className="flex gap-3">
+          <Avatar name={coach.name} src={coach.photoUrl} size="lg" />
+          <div className="min-w-0 flex-1 space-y-1 text-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-medium text-ink">{coach.name}</span>
+              <RiskBadge level={(coach.refereeRisk as RiskLevel) ?? "LOW"} size="sm" />
             </div>
-          )}
-          <div className="flex flex-wrap gap-2 text-xs">
-            <span className="chip bg-slate-100 text-ink-muted">Protesta: {PROTEST_LABELS[(coach.protestLevel as RiskLevel) ?? "LOW"]}</span>
-            {coach.yellowCards > 0 && <span className="chip bg-amber-100 text-amber-700">{coach.yellowCards} 🟨</span>}
-            {coach.redCards > 0 && <span className="chip bg-red-100 text-red-700">{coach.redCards} 🟥</span>}
+            <div className="text-xs text-ink-muted">{coach.role ?? "Entrenador"}</div>
+            {coach.previousTeams && <div className="text-xs text-gray-400">Antes: {coach.previousTeams}</div>}
+            <div className="flex flex-wrap gap-1.5 pt-1 text-xs">
+              <span className="chip bg-gray-100 text-ink-muted">Protesta: {PROTEST_LABELS[(coach.protestLevel as RiskLevel) ?? "LOW"]}</span>
+              {coach.yellowCards > 0 && <span className="chip bg-risk-mediumtint text-risk-medium">{coach.yellowCards} amar.</span>}
+              {coach.redCards > 0 && <span className="chip bg-risk-hightint text-risk-high">{coach.redCards} rojas</span>}
+            </div>
+            {coach.notes && <p className="text-xs text-ink-muted">{coach.notes}</p>}
           </div>
-          {coach.notes && <p className="text-xs text-slate-600">{coach.notes}</p>}
         </div>
       )}
-      {/* Resto del cuerpo técnico marcado como riesgo */}
       {team.staff.filter((s) => s !== coach && s.refereeRisk !== "LOW").map((s) => (
-        <div key={s.id} className="mt-2 rounded-lg bg-amber-50 p-2 text-xs text-amber-800">
-          <span className="font-semibold">{s.name}</span> ({s.role}) — {s.notes ?? "vigilar"}
+        <div key={s.id} className="mt-2 flex items-start gap-2 rounded-lg bg-risk-mediumtint p-2 text-xs text-risk-medium">
+          <RiskIcon className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          <span><span className="font-medium">{s.name}</span> ({s.role}) — {s.notes ?? "vigilar zona técnica"}</span>
         </div>
       ))}
     </div>

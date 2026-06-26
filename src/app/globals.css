@@ -2,55 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-slate-100 text-ink antialiased;
+  @apply bg-canvas text-ink antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Componentes reutilizables vía @apply para mantener el JSX limpio */
 @layer components {
+  /* Tarjeta base */
   .card {
-    @apply rounded-2xl bg-white shadow-card border border-slate-100;
+    @apply rounded-2xl border border-ink-line bg-white shadow-card;
   }
   .card-hover {
-    @apply transition-shadow hover:shadow-cardhover;
+    @apply transition-all duration-150 hover:-translate-y-0.5 hover:shadow-cardhover;
   }
+
+  /* Botones */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors;
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
   }
   .btn-primary {
     @apply btn bg-ink text-white hover:bg-ink-soft;
   }
   .btn-accent {
-    @apply btn bg-pitch-600 text-white hover:bg-pitch-700;
+    @apply btn bg-accent text-white hover:bg-accent-soft;
   }
   .btn-ghost {
-    @apply btn bg-slate-100 text-ink hover:bg-slate-200;
+    @apply btn border border-ink-line bg-white text-ink hover:bg-gray-50;
   }
+  .btn-subtle {
+    @apply btn bg-gray-100 text-ink hover:bg-gray-200;
+  }
+
+  /* Formularios */
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-ink focus:ring-2 focus:ring-ink/10;
+    @apply w-full rounded-lg border border-ink-line bg-white px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-gray-400 focus:border-ink focus:ring-2 focus:ring-ink/10;
   }
   .label {
-    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-muted;
+    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-ink-muted;
   }
+
+  /* Etiquetas / chips */
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium;
   }
+
+  /* Títulos de sección */
   .section-title {
-    @apply text-lg font-bold text-ink;
+    @apply text-base font-semibold tracking-tight text-ink;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted;
   }
 }
 
-/* Estilos específicos para la impresión / exportación a PDF del briefing */
+/* Impresión / exportación PDF: dossier limpio */
 @media print {
   .no-print {
     display: none !important;
   }
   body {
-    background: white !important;
+    background: #fff !important;
   }
   .print-page {
     box-shadow: none !important;
@@ -58,10 +73,13 @@ body {
   }
   .card {
     box-shadow: none !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid #e5e7eb !important;
     break-inside: avoid;
   }
+  .print-break {
+    break-before: page;
+  }
   @page {
-    margin: 1.2cm;
+    margin: 1.4cm;
   }
 }

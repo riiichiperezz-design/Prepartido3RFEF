@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { StaffMember } from "@prisma/client";
 import StaffCard from "./StaffCard";
 import StaffForm from "./StaffForm";
+import { StaffIcon, PlusIcon, EditIcon, DeleteIcon, CloseIcon } from "./icons";
 
 /**
  * Gestión del cuerpo técnico desde la ficha del equipo:
@@ -30,9 +31,13 @@ export default function StaffManager({
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="section-title">🎽 Cuerpo técnico</h2>
+        <div className="flex items-center gap-2">
+          <StaffIcon className="h-[18px] w-[18px] text-ink-muted" strokeWidth={2} />
+          <h2 className="text-lg font-semibold tracking-tight text-ink">Cuerpo técnico</h2>
+        </div>
         <button onClick={() => setAdding((a) => !a)} className="btn-ghost text-xs">
-          {adding ? "Cancelar" : "+ Añadir técnico"}
+          {adding ? <CloseIcon className="h-3.5 w-3.5" /> : <PlusIcon className="h-3.5 w-3.5" />}
+          {adding ? "Cancelar" : "Añadir técnico"}
         </button>
       </div>
 
@@ -54,11 +59,11 @@ export default function StaffManager({
             <div key={s.id} className="space-y-1">
               <StaffCard staff={s} />
               <div className="flex justify-end gap-3 px-1 text-xs">
-                <button onClick={() => setEditingId(s.id)} className="text-ink-muted hover:underline">
-                  ✏️ Editar
+                <button onClick={() => setEditingId(s.id)} className="inline-flex items-center gap-1 text-ink-muted hover:text-ink">
+                  <EditIcon className="h-3.5 w-3.5" /> Editar
                 </button>
-                <button onClick={() => remove(s.id, s.name)} className="text-red-500 hover:underline">
-                  🗑️ Borrar
+                <button onClick={() => remove(s.id, s.name)} className="inline-flex items-center gap-1 text-risk-high hover:underline">
+                  <DeleteIcon className="h-3.5 w-3.5" /> Borrar
                 </button>
               </div>
             </div>

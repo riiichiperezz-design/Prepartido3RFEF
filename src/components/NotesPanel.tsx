@@ -11,6 +11,7 @@ import {
   type EntityType,
 } from "@/lib/enums";
 import { formatDate } from "@/lib/format";
+import { NoteIcon } from "./icons";
 
 /**
  * Panel para ver y añadir notas propias del árbitro sobre una entidad.
@@ -57,22 +58,25 @@ export default function NotesPanel({
   }
 
   const impColor: Record<string, string> = {
-    LOW: "bg-pitch-100 text-pitch-700",
-    MEDIUM: "bg-amber-100 text-amber-700",
-    HIGH: "bg-red-100 text-red-700",
+    LOW: "bg-risk-lowtint text-risk-low",
+    MEDIUM: "bg-risk-mediumtint text-risk-medium",
+    HIGH: "bg-risk-hightint text-risk-high",
   };
 
   return (
     <div className="card p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="section-title text-base">📝 Notas propias</h3>
+        <div className="flex items-center gap-2">
+          <NoteIcon className="h-4 w-4 text-ink-muted" strokeWidth={2} />
+          <h3 className="section-title">Notas propias</h3>
+        </div>
         <button onClick={() => setOpen((o) => !o)} className="btn-ghost text-xs">
-          {open ? "Cancelar" : "+ Añadir nota"}
+          {open ? "Cancelar" : "Añadir nota"}
         </button>
       </div>
 
       {open && (
-        <form onSubmit={addNote} className="mb-4 space-y-3 rounded-xl bg-slate-50 p-3">
+        <form onSubmit={addNote} className="mb-4 space-y-3 rounded-xl bg-gray-50 p-3">
           <textarea
             className="input min-h-[70px]"
             placeholder="Escribe tu observación..."
