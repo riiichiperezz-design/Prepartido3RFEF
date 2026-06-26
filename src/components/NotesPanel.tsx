@@ -6,8 +6,11 @@ import type { RefereeNote } from "@prisma/client";
 import {
   NOTE_TYPES,
   NOTE_TYPE_LABELS,
+  NOTE_SOURCES,
+  NOTE_SOURCE_LABELS,
   RISK_LABELS,
   type NoteType,
+  type NoteSource,
   type EntityType,
 } from "@/lib/enums";
 import { formatDate } from "@/lib/format";
@@ -32,6 +35,8 @@ export default function NotesPanel({
   const [type, setType] = useState<NoteType>("OTHER");
   const [importance, setImportance] = useState("MEDIUM");
   const [showInBriefing, setShowInBriefing] = useState(true);
+  const [tags, setTags] = useState("");
+  const [source, setSource] = useState<NoteSource>("SELF");
   const [saving, setSaving] = useState(false);
 
   async function addNote(e: React.FormEvent) {
@@ -41,11 +46,13 @@ export default function NotesPanel({
     await fetch("/api/notes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ entityType, entityId, type, importance, text, showInBriefing }),
+      body: JSON.stringify({ entityType, entityId, type, importance, text, showInBriefing, tags, source }),
     });
     setText("");
     setType("OTHER");
     setImportance("MEDIUM");
+    setTags("");
+    setSource("SELF");
     setOpen(false);
     setSaving(false);
     router.refresh();
@@ -99,6 +106,12 @@ export default function NotesPanel({
                 </option>
               ))}
             </select>
+            <input className="input" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Etiquetas (coma)" />
+            <select className="input" value={source} onChange={(e) => setSource(e.target.value as NoteSource)}>
+              {NOTE_SOURCES.map((s) => (
+                <option key={s} value={s}>Fuente: {NOTE_SOURCE_LABELS[s]}</option>
+              ))}
+            </select>
           </div>
           <label className="flex items-center gap-2 text-sm text-ink-muted">
             <input type="checkbox" checked={showInBriefing} onChange={(e) => setShowInBriefing(e.target.checked)} />
@@ -111,21 +124,29 @@ export default function NotesPanel({
       )}
 
       {notes.length === 0 ? (
-        <p className="text-sm text-slate-400">Sin notas todavía.</p>
+        <p className="text-sm text-gray-400">Sin notas todavía.</p>
       ) : (
         <ul className="space-y-2">
           {notes.map((n) => (
-            <li key={n.id} className="rounded-xl border border-slate-100 p-3">
-              <div className="mb-1 flex items-center gap-2">
+            <li key={n.id} className="rounded-xl border border-ink-line p-3">
+              <div className="mb-1 flex flex-wrap items-center gap-2">
                 <span className="chip bg-ink text-white">{NOTE_TYPE_LABELS[n.type as NoteType] ?? n.type}</span>
                 <span className={`chip ${impColor[n.importance] ?? ""}`}>{RISK_LABELS[n.importance as "LOW" | "MEDIUM" | "HIGH"]}</span>
-                {n.showInBriefing && <span className="chip bg-slate-100 text-ink-muted">en briefing</span>}
-                <span className="ml-auto text-xs text-slate-400">{formatDate(n.date)}</span>
-                <button onClick={() => remove(n.id)} className="text-xs text-red-500 hover:underline">
+                {n.showInBriefing && <span className="chip bg-gray-100 text-ink-muted">en briefing</span>}
+                {n.source && <span className="chip bg-gray-100 text-ink-muted">{NOTE_SOURCE_LABELS[n.source as NoteSource] ?? n.source}</span>}
+                <span className="ml-auto text-xs text-gray-400">{formatDate(n.date)}</span>
+                <button onClick={() => remove(n.id)} className="text-xs text-risk-high hover:underline">
                   borrar
                 </button>
               </div>
-              <p className="text-sm text-slate-700">{n.text}</p>
+              <p className="text-sm text-ink">{n.text}</p>
+              {n.tags && (
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {n.tags.split(",").map((t) => t.trim()).filter(Boolean).map((t) => (
+                    <span key={t} className="chip bg-gray-100 text-ink-muted">{t}</span>
+                  ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>

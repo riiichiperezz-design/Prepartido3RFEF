@@ -16,12 +16,14 @@ import {
   NoteIcon,
   ForwardIcon,
   ChevronRightIcon,
+  CheckIcon,
 } from "@/components/icons";
+import { SITUATION_TYPE_LABELS, type SituationType } from "@/lib/enums";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const [teams, nextMatch, topScorers, topCards, topReds, recentNotes] = await Promise.all([
+  const [teams, nextMatch, topScorers, topCards, topReds, recentNotes, recentSituations, lastWeekly] = await Promise.all([
     getEnrichedTeams(),
     prisma.match.findFirst({
       where: { status: { not: "REFEREED" } },
@@ -32,7 +34,13 @@ export default async function DashboardPage() {
     prisma.player.findMany({ where: { yellowCards: { gt: 0 } }, orderBy: [{ yellowCards: "desc" }, { redCards: "desc" }], take: 5, include: { team: { select: { shortName: true, name: true } } } }),
     prisma.player.findMany({ where: { redCards: { gt: 0 } }, orderBy: { redCards: "desc" }, take: 5, include: { team: { select: { shortName: true, name: true } } } }),
     prisma.refereeNote.findMany({ orderBy: { date: "desc" }, take: 6 }),
+    prisma.tacticalSituation.findMany({ orderBy: { updatedAt: "desc" }, take: 5 }),
+    prisma.weeklyUpdate.findFirst({ orderBy: { createdAt: "desc" } }),
   ]);
+
+  // Estado de datos: "actualizado" si hay una actualización semanal en los últimos 10 días.
+  const daysSince = lastWeekly ? (Date.now() - new Date(lastWeekly.createdAt).getTime()) / 86400000 : Infinity;
+  const dataFresh = daysSince <= 10;
 
   const playersByRisk = teams
     .flatMap((t) => t.players.map((p) => ({ p, team: t.shortName ?? t.name })))
@@ -43,9 +51,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="eyebrow">Tercera Federación · Grupo 14 · Extremadura</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-ink">Panel de control</h1>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="eyebrow">Tercera Federación · Grupo 14 · Extremadura</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-ink">Panel de control</h1>
+        </div>
+        <span className={`chip ${dataFresh ? "bg-risk-lowtint text-risk-low" : "bg-risk-mediumtint text-risk-medium"}`}>
+          {dataFresh ? <CheckIcon className="h-3.5 w-3.5" strokeWidth={2.5} /> : <ClockIcon className="h-3.5 w-3.5" strokeWidth={2} />}
+          Datos {dataFresh ? "actualizados" : "pendientes de actualizar"}
+        </span>
       </div>
 
       {/* Próximo partido */}
@@ -138,6 +152,23 @@ export default async function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Situaciones tácticas recientes */}
+      {recentSituations.length > 0 && (
+        <div className="card p-4">
+          <Header Icon={TargetIcon} title="Situaciones tácticas recientes" />
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {recentSituations.map((s) => (
+              <li key={s.id}>
+                <Link href="/tactics" className="chip bg-gray-100 text-ink hover:bg-gray-200">
+                  {s.title}
+                  <span className="text-ink-muted">· {SITUATION_TYPE_LABELS[s.type as SituationType] ?? s.type}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

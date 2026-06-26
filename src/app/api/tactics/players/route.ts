@@ -22,6 +22,8 @@ export async function GET(req: NextRequest) {
       dorsal: p.dorsal,
       age: p.age,
       position: p.position,
+      matches: p.matches,
+      minutes: p.minutes,
       goals: p.goals,
       yellowCards: p.yellowCards,
       redCards: p.redCards,
