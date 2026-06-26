@@ -47,6 +47,20 @@ export default async function BriefingPage({
   const alerts = buildAlerts(home, away, homeKey, awayKey);
   const executiveSummary = buildExecutiveSummary(home, away, alerts);
 
+  // Alineaciones (última de cada equipo) y situaciones tácticas visibles
+  const [homeLineup, awayLineup, homeSituations, awaySituations] = await Promise.all([
+    prisma.lineup.findFirst({ where: { teamId: homeId }, orderBy: { updatedAt: "desc" } }),
+    prisma.lineup.findFirst({ where: { teamId: awayId }, orderBy: { updatedAt: "desc" } }),
+    prisma.tacticalSituation.findMany({ where: { teamId: homeId, visibleInBriefing: true }, orderBy: { importance: "desc" } }),
+    prisma.tacticalSituation.findMany({ where: { teamId: awayId, visibleInBriefing: true }, orderBy: { importance: "desc" } }),
+  ]);
+
+  // Mapa de metadatos de jugador (riesgo + foto) para pintar las fichas del campo
+  const playerMeta: Record<string, { risk?: string | null; photoUrl?: string | null }> = {};
+  for (const p of [...home.players, ...away.players]) {
+    playerMeta[p.id] = { risk: p.effectiveRisk, photoUrl: p.photoUrl };
+  }
+
   // Instrucciones previas guardadas (si existe el partido)
   const existing = await prisma.match.findFirst({
     where: { homeTeamId: homeId, awayTeamId: awayId, ...(date ? { date: new Date(date) } : {}) },
@@ -78,6 +92,11 @@ export default async function BriefingPage({
       assistant1={existing?.assistant1 ?? undefined}
       assistant2={existing?.assistant2 ?? undefined}
       initialInstructions={initialInstructions}
+      homeLineup={homeLineup}
+      awayLineup={awayLineup}
+      homeSituations={homeSituations}
+      awaySituations={awaySituations}
+      playerMeta={playerMeta}
     />
   );
 }

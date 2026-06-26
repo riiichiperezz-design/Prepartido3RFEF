@@ -11,6 +11,10 @@ import KeyPlayersSection from "./KeyPlayersSection";
 import AlertBox from "./AlertBox";
 import AssistantInstructions, { type Instructions } from "./AssistantInstructions";
 import PDFExportButton from "./PDFExportButton";
+import BoardRenderer from "./tactics/BoardRenderer";
+import { parseBoard } from "@/lib/tactics";
+import { SITUATION_TYPE_LABELS, type SituationType } from "@/lib/enums";
+import type { Lineup, TacticalSituation } from "@prisma/client";
 import { BackIcon, CheckIcon, RiskIcon, NoteIcon } from "./icons";
 
 interface Props {
@@ -30,6 +34,11 @@ interface Props {
   assistant1?: string;
   assistant2?: string;
   initialInstructions?: Partial<Instructions>;
+  homeLineup?: Lineup | null;
+  awayLineup?: Lineup | null;
+  homeSituations?: TacticalSituation[];
+  awaySituations?: TacticalSituation[];
+  playerMeta?: Record<string, { risk?: string | null; photoUrl?: string | null }>;
 }
 
 /** Briefing arbitral profesional (dossier prepartido). */
@@ -120,18 +129,30 @@ export default function MatchBriefing(props: Props) {
         </div>
       </section>
 
-      {/* 6. Análisis táctico */}
+      {/* 6. Análisis táctico (estilo + alineación probable sobre el campo) */}
       <section>
         <SectionHeader n={5} title="Análisis táctico" />
         <div className="mt-3 grid gap-4 md:grid-cols-2">
-          <StyleCard team={home} style={homeStyle} />
-          <StyleCard team={away} style={awayStyle} />
+          <TacticalColumn team={home} style={homeStyle} lineup={props.homeLineup} playerMeta={props.playerMeta} />
+          <TacticalColumn team={away} style={awayStyle} lineup={props.awayLineup} playerMeta={props.playerMeta} />
         </div>
       </section>
 
-      {/* 7. Alertas */}
+      {/* 7. Situaciones preparadas */}
+      {(((props.homeSituations?.length ?? 0) + (props.awaySituations?.length ?? 0)) > 0) && (
+        <section>
+          <SectionHeader n={6} title="Situaciones preparadas" />
+          <div className="mt-3 space-y-3">
+            {[...(props.homeSituations ?? []), ...(props.awaySituations ?? [])].map((s) => (
+              <SituationCard key={s.id} situation={s} playerMeta={props.playerMeta} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 8. Alertas */}
       <section>
-        <SectionHeader n={6} title="Alertas arbitrales" />
+        <SectionHeader n={7} title="Alertas arbitrales" />
         <div className="mt-3 grid gap-2 md:grid-cols-2">
           {alerts.map((a, i) => (
             <AlertBox key={i} level={a.level} title={a.title}>{a.detail}</AlertBox>
@@ -139,9 +160,9 @@ export default function MatchBriefing(props: Props) {
         </div>
       </section>
 
-      {/* 8. Instrucciones para asistentes */}
+      {/* 9. Instrucciones para asistentes */}
       <section className="print-break">
-        <SectionHeader n={7} title="Instrucciones para asistentes" />
+        <SectionHeader n={8} title="Instrucciones para asistentes" />
         <div className="mt-3">
           <AssistantInstructions
             home={home.id}
@@ -153,10 +174,10 @@ export default function MatchBriefing(props: Props) {
         </div>
       </section>
 
-      {/* 9. Notas personales */}
+      {/* 10. Notas personales */}
       {personalNotes.length > 0 && (
         <section>
-          <SectionHeader n={8} title="Notas personales" />
+          <SectionHeader n={9} title="Notas personales" />
           <div className="mt-3 card divide-y divide-ink-line">
             {personalNotes.map((n) => (
               <div key={n.id} className="flex gap-3 p-3">
@@ -213,6 +234,77 @@ const STYLE_ITEMS: { key: keyof StyleFlags; label: string }[] = [
   { key: "setPieces", label: "Fuerte a balón parado" },
   { key: "protests", label: "Suele protestar" },
 ];
+
+function TacticalColumn({
+  team,
+  style,
+  lineup,
+  playerMeta,
+}: {
+  team: EnrichedTeam;
+  style: StyleFlags;
+  lineup?: Lineup | null;
+  playerMeta?: Record<string, { risk?: string | null; photoUrl?: string | null }>;
+}) {
+  const board = lineup ? parseBoard(lineup.fieldData) : null;
+  return (
+    <div className="space-y-3">
+      <StyleCard team={team} style={style} />
+      {board && (
+        <div className="card p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="section-title">Alineación probable</h3>
+            <span className="chip bg-gray-100 text-ink-muted">{board.formation}</span>
+          </div>
+          <div className="mx-auto" style={{ maxWidth: board.orientation === "vertical" ? 320 : 520 }}>
+            <BoardRenderer board={board} playerMeta={playerMeta} className="w-full" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SituationCard({
+  situation,
+  playerMeta,
+}: {
+  situation: TacticalSituation;
+  playerMeta?: Record<string, { risk?: string | null; photoUrl?: string | null }>;
+}) {
+  const board = parseBoard(situation.fieldData);
+  const impColor = { LOW: "bg-risk-lowtint text-risk-low", MEDIUM: "bg-risk-mediumtint text-risk-medium", HIGH: "bg-risk-hightint text-risk-high" }[situation.importance] ?? "bg-gray-100 text-ink-muted";
+  return (
+    <div className="card p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="section-title">{situation.title}</h3>
+        <span className="chip bg-gray-100 text-ink-muted">{SITUATION_TYPE_LABELS[situation.type as SituationType] ?? situation.type}</span>
+        <span className={`chip ${impColor}`}>{{ LOW: "Baja", MEDIUM: "Media", HIGH: "Alta" }[situation.importance] ?? ""}</span>
+      </div>
+      <div className="mt-3 grid gap-4 md:grid-cols-[260px_1fr]">
+        {board && (
+          <div className="mx-auto w-full" style={{ maxWidth: board.orientation === "vertical" ? 260 : 420 }}>
+            <BoardRenderer board={board} playerMeta={playerMeta} className="w-full" />
+          </div>
+        )}
+        <div className="space-y-2 text-sm">
+          {situation.description && <p className="text-ink">{situation.description}</p>}
+          {situation.refereeInstruction && <InstrLine label="Árbitro" text={situation.refereeInstruction} />}
+          {situation.assistant1Instruction && <InstrLine label="Asistente 1" text={situation.assistant1Instruction} />}
+          {situation.assistant2Instruction && <InstrLine label="Asistente 2" text={situation.assistant2Instruction} />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InstrLine({ label, text }: { label: string; text: string }) {
+  return (
+    <p className="text-ink-muted">
+      <span className="font-semibold text-ink">{label}:</span> {text}
+    </p>
+  );
+}
 
 function StyleCard({ team, style }: { team: EnrichedTeam; style: StyleFlags }) {
   return (

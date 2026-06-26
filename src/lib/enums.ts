@@ -97,6 +97,47 @@ export const DATA_ORIGIN_LABELS: Record<string, string> = {
   API: "API externa",
 };
 
+export const SITUATION_TYPES = [
+  "HIGH_PRESS", "BUILD_UP", "ATTACK_RIGHT", "ATTACK_LEFT", "SET_PIECE_OFF",
+  "SET_PIECE_DEF", "CORNER", "WIDE_FREE_KICK", "DIRECT_FREE_KICK",
+  "TRANSITION_OFF", "TRANSITION_DEF", "OFFSIDE", "AREA", "BENCH",
+  "PROTEST", "PLAYER_WATCH", "REFEREE_POSITION", "ASSISTANTS", "OTHER",
+] as const;
+export type SituationType = (typeof SITUATION_TYPES)[number];
+
+export const SITUATION_TYPE_LABELS: Record<SituationType, string> = {
+  HIGH_PRESS: "Presión alta",
+  BUILD_UP: "Salida de balón",
+  ATTACK_RIGHT: "Ataque por banda derecha",
+  ATTACK_LEFT: "Ataque por banda izquierda",
+  SET_PIECE_OFF: "Balón parado ofensivo",
+  SET_PIECE_DEF: "Balón parado defensivo",
+  CORNER: "Córner",
+  WIDE_FREE_KICK: "Falta lateral",
+  DIRECT_FREE_KICK: "Tiro libre directo",
+  TRANSITION_OFF: "Transición ofensiva",
+  TRANSITION_DEF: "Transición defensiva",
+  OFFSIDE: "Fuera de juego",
+  AREA: "Situación de área",
+  BENCH: "Gestión de banquillos",
+  PROTEST: "Zona de protestas",
+  PLAYER_WATCH: "Vigilancia de jugador",
+  REFEREE_POSITION: "Posicionamiento arbitral",
+  ASSISTANTS: "Instrucciones para asistentes",
+  OTHER: "Otra",
+};
+
+export const NOTE_SOURCES = ["SELF", "VIDEO", "EXTERNAL", "INTUITION", "PREVIOUS_REPORT"] as const;
+export type NoteSource = (typeof NOTE_SOURCES)[number];
+
+export const NOTE_SOURCE_LABELS: Record<NoteSource, string> = {
+  SELF: "Observado por mí",
+  VIDEO: "Visto en vídeo",
+  EXTERNAL: "Dato externo",
+  INTUITION: "Intuición",
+  PREVIOUS_REPORT: "Informe anterior",
+};
+
 export const DATA_PROVIDERS = ["manual", "csv", "besoccer", "apifootball"] as const;
 export type DataProviderId = (typeof DATA_PROVIDERS)[number];
 

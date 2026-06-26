@@ -182,10 +182,17 @@ model RefereeNote {
   entityId       String
 
   date           DateTime @default(now())
-  type           String   @default("OTHER") // TACTICAL | DISCIPLINARY | PROTEST | BENCH | ASSISTANT | SET_PIECE | AREA | BEHAVIOUR | OTHER
+  type           String   @default("OTHER") // ver NOTE_TYPES en src/lib/enums.ts
   importance     String   @default("MEDIUM") // LOW | MEDIUM | HIGH
   text           String
   showInBriefing Boolean  @default(true)
+
+  // Campos ampliados (sistema de notas más potente)
+  tags           String?  // etiquetas separadas por comas
+  source         String?  // SELF | VIDEO | EXTERNAL | INTUITION | PREVIOUS_REPORT
+  teamId         String?  // equipo asociado (opcional)
+  playerId       String?  // jugador asociado (opcional)
+  situationId    String?  // situación táctica asociada (opcional)
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -203,4 +210,77 @@ model DataSource {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Campo táctico (pizarra arbitral)
+// ---------------------------------------------------------------------------
+
+// Alineación / formación de un equipo sobre el campo
+model Lineup {
+  id        String   @id @default(cuid())
+  teamId    String?
+  matchId   String?
+  name      String
+  formation String   @default("4-4-2") // 4-4-2 | 4-2-3-1 | 4-3-3 | 5-3-2 | 3-5-2 | CUSTOM
+  // Estado completo de la pizarra (jugadores, flechas, zonas, marcadores, texto)
+  fieldData String   @default("{}")
+  source    String?  // SELF | VIDEO | EXTERNAL | PREVIOUS_REPORT
+  notes     String?
+
+  positions PlayerFieldPosition[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+}
+
+// Posición concreta de un jugador real dentro de una alineación
+model PlayerFieldPosition {
+  id       String  @id @default(cuid())
+  lineupId String
+  lineup   Lineup  @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  playerId String?
+  x        Float   @default(50)
+  y        Float   @default(50)
+  role     String?
+  notes    String?
+
+  @@index([lineupId])
+}
+
+// Situación táctica preparada (presión alta, córner, fuera de juego, etc.)
+model TacticalSituation {
+  id                   String   @id @default(cuid())
+  title                String
+  teamId               String?
+  matchId              String?
+  type                 String   @default("OTHER") // ver SITUATION_TYPES en src/lib/enums.ts
+  importance           String   @default("MEDIUM") // LOW | MEDIUM | HIGH
+  fieldData            String   @default("{}") // estado de la pizarra
+  description          String?
+  refereeInstruction   String?
+  assistant1Instruction String?
+  assistant2Instruction String?
+  visibleInBriefing    Boolean  @default(true)
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([teamId])
+}
+
+// Registro de actualización semanal de un equipo (rutina de jornada)
+model WeeklyUpdate {
+  id        String   @id @default(cuid())
+  week      String
+  season    String?
+  teamId    String?
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId, week])
 }
