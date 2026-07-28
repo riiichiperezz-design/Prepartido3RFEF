@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { DashboardIcon, BriefingIcon, TargetIcon, TeamIcon, PlayerIcon } from "./icons";
+import { DashboardIcon, CalendarIcon, BriefingIcon, TargetIcon, TeamIcon } from "./icons";
 
 const items = [
   { href: "/", label: "Panel", Icon: DashboardIcon },
+  { href: "/calendar", label: "Calendario", Icon: CalendarIcon },
   { href: "/match", label: "Partido", Icon: BriefingIcon },
   { href: "/tactics", label: "Táctico", Icon: TargetIcon },
   { href: "/teams", label: "Equipos", Icon: TeamIcon },
-  { href: "/players", label: "Jugadores", Icon: PlayerIcon },
 ];
 
 export default function MobileNav() {

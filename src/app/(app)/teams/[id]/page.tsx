@@ -53,8 +53,12 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
             </p>
             <p className="text-xs text-gray-400">
               {team.category} · {team.currentPosition ? `${team.currentPosition}.º clasificado` : "Sin clasificación"}
-              {team.seasonsInCategory ? ` · ${team.seasonsInCategory} temporadas en la categoría` : ""}
             </p>
+            <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
+              {team.pitchType && <span className="chip bg-gray-100 text-ink-muted">{team.pitchType}</span>}
+              {team.kitHome && <span className="chip bg-gray-100 text-ink-muted">{team.kitHome}</span>}
+              {team.contactPhone && <span className="chip bg-gray-100 text-ink-muted">Tel. {team.contactPhone}</span>}
+            </div>
           </div>
           <div className="flex gap-2">
             <Link href={`/teams/${team.id}/edit`} className="btn-ghost">

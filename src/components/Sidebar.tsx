@@ -10,6 +10,7 @@ import {
   PlayerIcon,
   TargetIcon,
   ClockIcon,
+  CalendarIcon,
   ImportIcon,
   SettingsIcon,
   LogoutIcon,
@@ -17,6 +18,7 @@ import {
 
 const items = [
   { href: "/", label: "Panel", Icon: DashboardIcon },
+  { href: "/calendar", label: "Calendario", Icon: CalendarIcon },
   { href: "/match", label: "Preparar partido", Icon: BriefingIcon, primary: true },
   { href: "/tactics", label: "Campo táctico", Icon: TargetIcon },
   { href: "/weekly", label: "Actualización semanal", Icon: ClockIcon },

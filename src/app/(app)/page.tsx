@@ -23,10 +23,16 @@ import { SITUATION_TYPE_LABELS, type SituationType } from "@/lib/enums";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const [teams, nextMatch, topScorers, topCards, topReds, recentNotes, recentSituations, lastWeekly] = await Promise.all([
+  const now = new Date();
+  const [teams, designatedMatch, upcomingMatch, topScorers, topCards, topReds, recentNotes, recentSituations, lastWeekly] = await Promise.all([
     getEnrichedTeams(),
     prisma.match.findFirst({
-      where: { status: { not: "REFEREED" } },
+      where: { designated: true, status: { not: "REFEREED" } },
+      orderBy: { date: "asc" },
+      include: { homeTeam: true, awayTeam: true },
+    }),
+    prisma.match.findFirst({
+      where: { date: { gte: now } },
       orderBy: { date: "asc" },
       include: { homeTeam: true, awayTeam: true },
     }),
@@ -37,6 +43,17 @@ export default async function DashboardPage() {
     prisma.tacticalSituation.findMany({ orderBy: { updatedAt: "desc" }, take: 5 }),
     prisma.weeklyUpdate.findFirst({ orderBy: { createdAt: "desc" } }),
   ]);
+
+  // Partido a destacar: el que me han designado; si no, el próximo de la liga.
+  const nextMatch = designatedMatch ?? upcomingMatch;
+  // Partidos de la próxima jornada (para la vista rápida del calendario)
+  const upcomingMatchdayMatches = upcomingMatch?.matchday
+    ? await prisma.match.findMany({
+        where: { matchday: upcomingMatch.matchday },
+        orderBy: { date: "asc" },
+        include: { homeTeam: { select: { shortName: true, name: true, crestUrl: true } }, awayTeam: { select: { shortName: true, name: true, crestUrl: true } } },
+      })
+    : [];
 
   // Estado de datos: "actualizado" si hay una actualización semanal en los últimos 10 días.
   const daysSince = lastWeekly ? (Date.now() - new Date(lastWeekly.createdAt).getTime()) / 86400000 : Infinity;
@@ -62,10 +79,10 @@ export default async function DashboardPage() {
         </span>
       </div>
 
-      {/* Próximo partido */}
+      {/* Próximo partido / partido designado */}
       <section className="card overflow-hidden">
         <div className="flex items-center justify-between border-b border-ink-line px-5 py-2.5">
-          <span className="eyebrow">Próximo partido</span>
+          <span className="eyebrow">{designatedMatch ? "Tu próximo partido designado" : "Próximo partido de la jornada"}</span>
           {nextMatch?.round && <span className="text-xs text-ink-muted">{nextMatch.round}</span>}
         </div>
         {nextMatch ? (
@@ -88,9 +105,41 @@ export default async function DashboardPage() {
             </Link>
           </div>
         ) : (
-          <div className="p-5 text-sm text-ink-muted">No hay partidos programados. Prepara uno nuevo.</div>
+          <div className="p-5 text-sm text-ink-muted">No hay partidos programados.</div>
         )}
       </section>
+
+      {/* Próxima jornada */}
+      {upcomingMatchdayMatches.length > 0 && (
+        <section className="card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-ink-line px-5 py-2.5">
+            <span className="eyebrow">Próxima jornada · {upcomingMatch?.round}</span>
+            <Link href={`/calendar?md=${upcomingMatch?.matchday ?? ""}`} className="text-xs text-accent hover:underline">Ver calendario completo</Link>
+          </div>
+          <ul className="divide-y divide-ink-line">
+            {upcomingMatchdayMatches.map((m) => (
+              <li key={m.id} className={`flex items-center gap-3 px-5 py-2 text-sm ${m.designated ? "bg-accent/5" : ""}`}>
+                <div className="flex flex-1 items-center justify-end gap-2 text-right">
+                  <span className="truncate text-ink">{m.homeTeam.shortName ?? m.homeTeam.name}</span>
+                  <Avatar name={m.homeTeam.shortName ?? m.homeTeam.name} src={m.homeTeam.crestUrl} size="sm" square variant="team" />
+                </div>
+                <span className="shrink-0 text-xs text-gray-400">vs</span>
+                <div className="flex flex-1 items-center gap-2">
+                  <Avatar name={m.awayTeam.shortName ?? m.awayTeam.name} src={m.awayTeam.crestUrl} size="sm" square variant="team" />
+                  <span className="truncate text-ink">{m.awayTeam.shortName ?? m.awayTeam.name}</span>
+                </div>
+                {m.designated && <span className="chip shrink-0 bg-accent/10 text-accent">Designado</span>}
+                <Link
+                  href={`/match/briefing?home=${m.homeTeamId}&away=${m.awayTeamId}&round=${encodeURIComponent(m.round ?? "")}&date=${m.date?.toISOString() ?? ""}`}
+                  className="shrink-0 text-xs text-ink-muted hover:text-ink"
+                >
+                  Briefing
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Accesos rápidos */}
       <div className="grid gap-3 sm:grid-cols-3">

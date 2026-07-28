@@ -47,6 +47,12 @@ model Team {
   category          String?  @default("Tercera Federación")
   seasonsInCategory Int?     @default(0)
 
+  // Información oficial estructurada (del calendario de la FExF)
+  pitchType         String?  // Hierba artificial | Hierba natural
+  kitHome           String?  // equipación titular (colores)
+  contactPhone      String?
+  federationCode    String?
+
   // Clasificación / estadística agregada
   currentPosition   Int?
   points            Int?     @default(0)
@@ -153,10 +159,22 @@ model Match {
 
   date           DateTime?
   round          String?
+  matchday       Int?
   stadium        String?
 
   // PENDING | PREPARED | REFEREED
   status         String   @default("PENDING")
+
+  // Resultado y disciplina del partido (edición manual tras arbitrarlo)
+  homeGoals        Int?
+  awayGoals        Int?
+  homeYellowCards  Int     @default(0)
+  awayYellowCards  Int     @default(0)
+  homeRedCards     Int     @default(0)
+  awayRedCards     Int     @default(0)
+
+  // Partido que me han designado a mí
+  designated     Boolean  @default(false)
 
   referee        String?
   assistant1     String?
