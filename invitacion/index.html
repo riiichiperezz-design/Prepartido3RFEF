@@ -3,29 +3,27 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BORJA DELUXE · Confirma tu asistencia</title>
+<title>BORJITA DELUXE PRODUCCIONES · Confirma tu asistencia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --gold: #e9c46a;
-    --gold-bright: #f6d97a;
-    --cream: #f3e3c3;
-    --maroon: #4a0d16;
-    --red: #c81e2c;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
     font-family: 'Oswald', system-ui, sans-serif;
-    background:
-      radial-gradient(120% 80% at 50% 0%, #5e0f1b 0%, #340a10 45%, #150d09 100%);
-    color: var(--cream);
+    color: #14210f;
     min-height: 100%;
     display: flex;
     justify-content: center;
     padding: 24px 16px 48px;
+    background:
+      radial-gradient(60% 55% at 12% 12%, #bcd93b 0%, rgba(188,217,59,0) 60%),
+      radial-gradient(55% 50% at 90% 22%, #52d6da 0%, rgba(82,214,218,0) 60%),
+      radial-gradient(60% 55% at 88% 78%, #38ccae 0%, rgba(56,204,174,0) 60%),
+      radial-gradient(60% 55% at 10% 88%, #d8e34a 0%, rgba(216,227,74,0) 60%),
+      radial-gradient(45% 40% at 48% 50%, #f2f5e4 0%, rgba(242,245,228,0) 60%),
+      linear-gradient(135deg, #d3e24a, #58d5cf);
   }
   .wrap {
     width: 100%;
@@ -37,53 +35,47 @@
   }
   .preview {
     width: 100%;
-    border-radius: 18px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 24px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(233,196,106,.18);
+    box-shadow: 0 20px 50px rgba(20,40,20,.35);
   }
   .preview canvas { display: block; width: 100%; height: auto; }
   .card {
     width: 100%;
-    background: rgba(20,10,8,.55);
-    border: 1px solid rgba(233,196,106,.28);
+    background: rgba(255,255,255,.82);
+    border: 1px solid rgba(20,40,20,.12);
     border-radius: 18px;
     padding: 22px 20px 24px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 14px 34px rgba(20,40,20,.18);
   }
   label {
     display: block;
-    font-weight: 600;
-    letter-spacing: .22em;
+    font-weight: 700;
+    letter-spacing: .12em;
     text-transform: uppercase;
     font-size: 13px;
-    color: var(--gold);
+    color: #1c2b14;
     margin-bottom: 10px;
   }
   input[type="text"] {
     width: 100%;
-    background: rgba(0,0,0,.35);
-    border: 1px solid rgba(233,196,106,.35);
+    background: #fff;
+    border: 1.5px solid rgba(20,40,20,.25);
     border-radius: 12px;
     padding: 15px 16px;
-    color: #fff;
+    color: #14210f;
     font-family: 'Oswald', sans-serif;
     font-size: 18px;
-    letter-spacing: .01em;
     outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  input[type="text"]::placeholder { color: rgba(243,227,195,.45); }
+  input[type="text"]::placeholder { color: rgba(20,40,20,.4); }
   input[type="text"]:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(233,196,106,.15);
+    border-color: #16a58f;
+    box-shadow: 0 0 0 3px rgba(22,165,143,.18);
   }
-  .err {
-    color: #ff9b9b;
-    font-size: 13px;
-    min-height: 18px;
-    margin-top: 8px;
-    letter-spacing: .02em;
-  }
+  .err { color: #b21f2d; font-size: 13px; min-height: 18px; margin-top: 8px; }
   button {
     width: 100%;
     margin-top: 14px;
@@ -94,33 +86,17 @@
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
     font-size: 17px;
-    letter-spacing: .14em;
+    letter-spacing: .1em;
     text-transform: uppercase;
-    color: #fff;
-    background: linear-gradient(180deg, #d8202f 0%, #9a1019 60%, #7d0f18 100%);
-    box-shadow: 0 12px 26px rgba(150,10,20,.5), inset 0 1px 0 rgba(255,255,255,.25);
+    color: #08130a;
+    background: linear-gradient(180deg, #7ee0b0 0%, #35c9c2 55%, #17a89e 100%);
+    box-shadow: 0 12px 24px rgba(23,168,158,.4), inset 0 1px 0 rgba(255,255,255,.5);
     transition: transform .08s ease, filter .2s;
   }
-  button:hover { filter: brightness(1.06); }
+  button:hover { filter: brightness(1.05); }
   button:active { transform: translateY(1px); }
-  button:disabled { opacity: .6; cursor: default; }
-  .hint {
-    margin-top: 14px;
-    text-align: center;
-    font-size: 13px;
-    color: rgba(243,227,195,.6);
-    letter-spacing: .03em;
-    line-height: 1.5;
-  }
-  .ok {
-    margin-top: 14px;
-    text-align: center;
-    font-size: 14px;
-    color: var(--gold-bright);
-    letter-spacing: .05em;
-    font-weight: 500;
-    display: none;
-  }
+  .hint { margin-top: 14px; text-align: center; font-size: 13px; color: #33482a; line-height: 1.5; }
+  .ok { margin-top: 14px; text-align: center; font-size: 14px; color: #0d7a2e; font-weight: 600; display: none; }
   .ok.show { display: block; }
 </style>
 </head>
@@ -132,8 +108,8 @@
       <input type="text" id="name" name="name" placeholder="Escribe tu nombre completo" maxlength="42" />
       <div class="err" id="err"></div>
       <button type="submit" id="btn">Confirmar asistencia y descargar</button>
-      <div class="ok" id="ok">✓ ¡Invitación descargada! Nos vemos el sábado.</div>
-      <p class="hint">Escribe tu nombre y pulsa el botón.<br/>Recibirás tu invitación personalizada en PNG.</p>
+      <div class="ok" id="ok">✓ ¡Entrada descargada! Nos vemos el sábado.</div>
+      <p class="hint">Escribe tu nombre y pulsa el botón.<br/>Se descargará tu entrada personalizada en PNG.</p>
     </form>
   </div>
 
@@ -2440,52 +2416,57 @@ var qrcode = function() {
 
 <script>
 /* =====================================================================
-   CONFIGURACIÓN DEL EVENTO
-   Cambia aquí los textos, la fecha o el nombre de la fiesta.
-   El diseño (posición de todo) se mantiene igual que la invitación dorada.
+   CONFIGURACIÓN DE LA ENTRADA
+   Cambia aquí los textos, la fecha, el sitio, etc.
+   El QR codifica el mensaje de qrData (se lee al escanearlo).
    ===================================================================== */
 const CONFIG = {
-  intro:      "ESTÁS INVITADO A",
-  titleLine1: "BORJA",
-  titleLine2: "DELUXE",
-  dateLine:   "SÁBADO, 8 DE AGOSTO",
-  doorsLine:  "PUERTAS ABIERTAS A LAS 15:00 H",
-  activities: "PISCINA · TORNEO FIFA · CENA",
-  extra1:     "BEBIDAS, PICOTEO Y CENA EN CASA.",
-  extra2:     "Y DE MADRUGADA… FIESTA EN CABALLERIZAS.",
-  guestLabel: "INVITADO",
-  badge:      "ASISTENCIA CONFIRMADA",
-  qrCaption:  "ESCANEA PARA ACCEDER",
-  // Contenido que codifica el QR (personalizado con el nombre)
-  qrData: (name) => `BORJA DELUXE · ${name.toUpperCase()} · 08/08 · ASISTENCIA CONFIRMADA`,
-  placeholderName: "INVITADO ESPECIAL"
+  brandLine1: "BORJITA DELUXE",
+  brandLine2: "PRODUCCIONES",
+  dayName:    "SÁBADO",
+  dayNum:     "8",
+  monthPre:   "de",
+  monthName:  "Agosto",
+  timeLine:   "A partir de las 15:00h",
+  place:      "BorjitiHouse",
+  accessLimit:"Hora límite de acceso: 15:40",
+  promo:      ["PROMO", "ANTICIPADA·1", "CONSUMICIÓN"],
+  units:      "x1 unidades",
+  email:      "riiichiperezz@gmail.com",
+  productTitle: "Producto",
+  product:    "PromoAnticipada• 1 consumición",
+  ageLabel:   "Edad",       age:   "+20",
+  dressLabel: "Dress code",  dress: "Arreglado",
+  descTitle:  "Descripción",
+  desc:       "*Marcas concertadas *Prohibido acceder con: riñoneras, bandoleras, gorras, boinas, ropa deportiva o de trabajo. La organización se reserva el derecho de admisión.",
+  footer1:    "La compra de esta entrada implica la aceptación de los términos de Borjita Deluxe Producciones.",
+  footer2:    "Borjita Deluxe Producciones no se responsabiliza de ningún acontecimiento relativo al evento.",
+  // Contenido que se lee al escanear el QR:
+  qrData:     "¡TOCA Y VETE CACAHUETE EN LA FIESTA DE CAÑETE!",
+  placeholderName: "Invitado Especial"
 };
 
-/* ---- dimensiones lógicas del póster (relación ~0.69, vertical) ---- */
-const W = 1000, H = 1440, SCALE = 2, CX = W / 2;
+const W = 1000, H = 1414, SCALE = 2, CX = W / 2;
+const INK = '#141414', INK2 = '#3a3a3a', INK3 = '#5a5a5a';
 
 /* ---------- helpers ---------- */
+// Codifica la cadena como bytes UTF-8 para que el QR muestre tildes/ñ/¡ al escanear
+function utf8Bytes(str) {
+  const bytes = new TextEncoder().encode(str);
+  let s = '';
+  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return s;
+}
 function roundRect(ctx, x, y, w, h, r) {
   const rr = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y,     x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x,     y + h, rr);
-  ctx.arcTo(x,     y + h, x,     y,     rr);
-  ctx.arcTo(x,     y,     x + w, y,     rr);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
   ctx.closePath();
 }
-
-function goldGradient(ctx, yTop, yBot) {
-  const g = ctx.createLinearGradient(0, yTop, 0, yBot);
-  g.addColorStop(0.00, '#fff6db');
-  g.addColorStop(0.34, '#f4d67a');
-  g.addColorStop(0.66, '#d7a53c');
-  g.addColorStop(1.00, '#a5701a');
-  return g;
-}
-
-// Encuentra el tamaño de fuente que hace caber el texto en maxWidth
 function fitFontSize(ctx, text, weight, family, startSize, minSize, maxWidth, spacing) {
   let size = startSize;
   ctx.letterSpacing = (spacing || 0) + 'px';
@@ -2496,230 +2477,243 @@ function fitFontSize(ctx, text, weight, family, startSize, minSize, maxWidth, sp
   }
   return size;
 }
-
-/* ---------- generación del póster ---------- */
-function drawPoster(ctx, rawName) {
-  const name = (rawName && rawName.trim()) ? rawName.trim().toUpperCase() : CONFIG.placeholderName;
-
-  ctx.clearRect(0, 0, W, H);
-
-  /* fondo: granate -> negro con brillo cálido inferior */
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0.00, '#5c0f1b');
-  bg.addColorStop(0.32, '#380b11');
-  bg.addColorStop(0.60, '#1c1109');
-  bg.addColorStop(1.00, '#241708');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-
-  // brillo cálido dorado en la parte inferior
-  const glow = ctx.createRadialGradient(CX, H * 0.9, 40, CX, H * 0.9, W * 0.85);
-  glow.addColorStop(0, 'rgba(120,84,26,0.55)');
-  glow.addColorStop(1, 'rgba(120,84,26,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
-
-  // viñeta sutil en las esquinas
-  const vg = ctx.createRadialGradient(CX, H / 2, H * 0.25, CX, H / 2, H * 0.72);
-  vg.addColorStop(0, 'rgba(0,0,0,0)');
-  vg.addColorStop(1, 'rgba(0,0,0,0.45)');
-  ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, W, H);
-
-  /* doble marco dorado */
-  ctx.strokeStyle = 'rgba(233,196,106,0.85)';
-  ctx.lineWidth = 2.5;
-  roundRect(ctx, 20, 20, W - 40, H - 40, 26);
-  ctx.stroke();
-  ctx.strokeStyle = 'rgba(233,196,106,0.45)';
-  ctx.lineWidth = 1;
-  roundRect(ctx, 32, 32, W - 64, H - 64, 20);
-  ctx.stroke();
-
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'alphabetic';
-
-  /* "ESTÁS INVITADO A" */
-  ctx.fillStyle = '#e3b85c';
-  ctx.letterSpacing = '10px';
-  ctx.font = '500 26px Oswald';
-  ctx.fillText(CONFIG.intro, CX + 5, 132);
-
-  /* TÍTULO (dos líneas, degradado dorado) */
-  ctx.shadowColor = 'rgba(246,215,120,0.28)';
-  ctx.shadowBlur = 26;
-
-  const t1 = CONFIG.titleLine1, t2 = CONFIG.titleLine2;
-  const s1 = fitFontSize(ctx, t1, 400, 'Anton', 168, 90, 780, 2);
-  ctx.font = `400 ${s1}px Anton`;
-  ctx.fillStyle = goldGradient(ctx, 175, 175 + s1);
-  ctx.fillText(t1, CX + 2, 300);
-
-  const s2 = fitFontSize(ctx, t2, 400, 'Anton', 168, 90, 800, 2);
-  ctx.font = `400 ${s2}px Anton`;
-  ctx.fillStyle = goldGradient(ctx, 310, 310 + s2);
-  ctx.fillText(t2, CX + 2, 435);
-
-  ctx.shadowBlur = 0;
-  ctx.letterSpacing = '0px';
-
-  /* divisor dorado central */
-  const divY = 500, divW = 150;
-  const dg = ctx.createLinearGradient(CX - divW, 0, CX + divW, 0);
-  dg.addColorStop(0, 'rgba(233,196,106,0)');
-  dg.addColorStop(0.5, 'rgba(246,215,120,0.95)');
-  dg.addColorStop(1, 'rgba(233,196,106,0)');
-  ctx.strokeStyle = dg;
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.moveTo(CX - divW, divY);
-  ctx.lineTo(CX + divW, divY);
-  ctx.stroke();
-
-  /* fecha y detalles */
-  ctx.fillStyle = '#f7ead0';
-  ctx.font = '700 50px Oswald';
-  ctx.letterSpacing = '1px';
-  ctx.fillText(CONFIG.dateLine, CX, 585);
-
-  ctx.fillStyle = '#ecd6a8';
-  ctx.font = '500 36px Oswald';
-  ctx.letterSpacing = '0.5px';
-  ctx.fillText(CONFIG.doorsLine, CX, 638);
-
-  ctx.fillStyle = '#d7b98c';
-  ctx.font = '400 30px Oswald';
-  ctx.letterSpacing = '1px';
-  ctx.fillText(CONFIG.activities, CX, 688);
-
-  /* extras */
-  ctx.fillStyle = '#e4c9a0';
-  ctx.font = '400 27px Oswald';
-  ctx.letterSpacing = '0.5px';
-  ctx.fillText(CONFIG.extra1, CX, 770);
-  ctx.fillText(CONFIG.extra2, CX, 812);
-
-  /* etiqueta INVITADO con líneas laterales */
-  const labY = 905;
-  ctx.fillStyle = '#e3b85c';
-  ctx.letterSpacing = '10px';
-  ctx.font = '500 26px Oswald';
-  const labW = ctx.measureText(CONFIG.guestLabel).width;
-  ctx.fillText(CONFIG.guestLabel, CX + 5, labY);
-  ctx.letterSpacing = '0px';
-  const lineGap = labW / 2 + 40, lineLen = 150;
-  ctx.strokeStyle = 'rgba(233,196,106,0.55)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(CX - lineGap - lineLen, labY - 9);
-  ctx.lineTo(CX - lineGap, labY - 9);
-  ctx.moveTo(CX + lineGap, labY - 9);
-  ctx.lineTo(CX + lineGap + lineLen, labY - 9);
-  ctx.stroke();
-
-  /* NOMBRE DEL INVITADO (blanco, ajustado al ancho) */
-  const nameSize = fitFontSize(ctx, name, 700, 'Oswald', 70, 30, 820, 1);
-  ctx.font = `700 ${nameSize}px Oswald`;
-  ctx.letterSpacing = '1px';
-  ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = 'rgba(0,0,0,0.4)';
-  ctx.shadowBlur = 8;
-  ctx.fillText(name, CX, 985);
-  ctx.shadowBlur = 0;
-  ctx.letterSpacing = '0px';
-
-  /* botón/insignia rojo "ASISTENCIA CONFIRMADA" con check */
-  ctx.font = '600 30px Oswald';
-  ctx.letterSpacing = '2px';
-  const badgeTextW = ctx.measureText(CONFIG.badge).width;
-  const checkW = 34, innerGap = 16, padX = 40;
-  const pillW = checkW + innerGap + badgeTextW + padX * 2;
-  const pillH = 74, pillY = 1035, pillX = CX - pillW / 2;
-
-  const pg = ctx.createLinearGradient(0, pillY, 0, pillY + pillH);
-  pg.addColorStop(0, '#d8202f');
-  pg.addColorStop(0.55, '#a3131c');
-  pg.addColorStop(1, '#7c0f17');
-  ctx.save();
-  ctx.shadowColor = 'rgba(160,15,25,0.55)';
-  ctx.shadowBlur = 26;
-  ctx.shadowOffsetY = 8;
-  ctx.fillStyle = pg;
-  roundRect(ctx, pillX, pillY, pillW, pillH, pillH / 2);
-  ctx.fill();
-  ctx.restore();
-  ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-  ctx.lineWidth = 1.5;
-  roundRect(ctx, pillX + 1, pillY + 1, pillW - 2, pillH - 2, (pillH - 2) / 2);
-  ctx.stroke();
-
-  // check vectorial
-  const cy = pillY + pillH / 2;
-  const checkX = pillX + padX;
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 4.5;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.beginPath();
-  ctx.moveTo(checkX, cy + 2);
-  ctx.lineTo(checkX + 11, cy + 13);
-  ctx.lineTo(checkX + 33, cy - 12);
-  ctx.stroke();
-
-  // texto del badge
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '600 30px Oswald';
-  ctx.letterSpacing = '2px';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(CONFIG.badge, checkX + checkW + innerGap, cy + 2);
-  ctx.textBaseline = 'alphabetic';
-  ctx.textAlign = 'center';
-  ctx.letterSpacing = '0px';
-
-  /* QR */
-  const qrBox = 232, qrPad = 18, qrTop = 1122, qrX = CX - qrBox / 2;
-  ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = 'rgba(0,0,0,0.35)';
-  ctx.shadowBlur = 18;
-  roundRect(ctx, qrX, qrTop, qrBox, qrBox, 18);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  try {
-    const qr = qrcode(0, 'M');
-    qr.addData(CONFIG.qrData(name));
-    qr.make();
-    const n = qr.getModuleCount();
-    const inner = qrBox - qrPad * 2;
-    const cell = inner / n;
-    ctx.fillStyle = '#111111';
-    for (let r = 0; r < n; r++) {
-      for (let c = 0; c < n; c++) {
-        if (qr.isDark(r, c)) {
-          ctx.fillRect(
-            Math.floor(qrX + qrPad + c * cell),
-            Math.floor(qrTop + qrPad + r * cell),
-            Math.ceil(cell),
-            Math.ceil(cell)
-          );
-        }
-      }
-    }
-  } catch (e) { /* si el QR fallara, dejamos el recuadro blanco */ }
-
-  /* leyenda inferior */
-  ctx.fillStyle = '#d9ac57';
-  ctx.font = '500 24px Oswald';
-  ctx.letterSpacing = '8px';
-  ctx.fillText(CONFIG.qrCaption, CX + 4, 1398);
-  ctx.letterSpacing = '0px';
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  for (let i = 0; i < words.length; i++) {
+    const test = line ? line + ' ' + words[i] : words[i];
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = words[i];
+      y += lineHeight;
+    } else { line = test; }
+  }
+  if (line) { ctx.fillText(line, x, y); y += lineHeight; }
+  return y;
+}
+// Código de entrada determinista a partir del nombre
+function ticketCode(name) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let h = 2166136261 >>> 0;
+  const s = 'PNYX' + name.toUpperCase();
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  let out = 'PNYXZ';
+  for (let i = 0; i < 9; i++) { out += chars[h % 36]; h = (Math.imul(h, 48271) + 11) >>> 0; }
+  return out;
 }
 
-/* ---------- lienzo y render ---------- */
+/* ---------- iconos vectoriales monocromos ---------- */
+function drawPin(ctx, x, y, s, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, s * 0.5, Math.PI, 0, false);
+  ctx.bezierCurveTo(x + s * 0.5, y + s * 0.55, x + s * 0.16, y + s * 0.75, x, y + s * 1.15);
+  ctx.bezierCurveTo(x - s * 0.16, y + s * 0.75, x - s * 0.5, y + s * 0.55, x - s * 0.5, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#f4f6e6';
+  ctx.beginPath();
+  ctx.arc(x, y, s * 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+function drawCake(ctx, x, y, s, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color;
+  ctx.lineWidth = s * 0.09; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  // base
+  ctx.strokeRect(x, y, s, s * 0.6);
+  // línea de decoración
+  ctx.beginPath(); ctx.moveTo(x, y + s * 0.25); ctx.lineTo(x + s, y + s * 0.25); ctx.stroke();
+  // vela
+  ctx.beginPath(); ctx.moveTo(x + s * 0.5, y); ctx.lineTo(x + s * 0.5, y - s * 0.28); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x + s * 0.5, y - s * 0.36, s * 0.08, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawHanger(ctx, x, y, s, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = s * 0.08; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(x + s * 0.5, y + s * 0.12, s * 0.12, Math.PI * 0.15, Math.PI * 1.1); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x + s * 0.5, y + s * 0.24);
+  ctx.lineTo(x, y + s * 0.62);
+  ctx.lineTo(x + s, y + s * 0.62);
+  ctx.closePath(); ctx.stroke();
+  ctx.restore();
+}
+
+/* ---------- fondo holográfico ---------- */
+function drawBackground(ctx) {
+  const base = ctx.createLinearGradient(0, 0, W, H);
+  base.addColorStop(0, '#d5e24a');
+  base.addColorStop(1, '#57d4cf');
+  ctx.fillStyle = base; ctx.fillRect(0, 0, W, H);
+  const blobs = [
+    { x: 0.12, y: 0.12, r: 0.70, c: '#b8d63a' },
+    { x: 0.90, y: 0.20, r: 0.62, c: '#4fd3da' },
+    { x: 0.88, y: 0.74, r: 0.66, c: '#37ccad' },
+    { x: 0.10, y: 0.86, r: 0.66, c: '#d9e34a' },
+    { x: 0.52, y: 0.08, r: 0.42, c: '#e8ea55' },
+    { x: 0.06, y: 0.48, r: 0.40, c: '#edf1cf' },
+    { x: 0.46, y: 0.50, r: 0.40, c: '#f3f6e6' }
+  ];
+  for (const b of blobs) {
+    const R = b.r * Math.max(W, H);
+    const g = ctx.createRadialGradient(b.x * W, b.y * H, 0, b.x * W, b.y * H, R);
+    g.addColorStop(0, b.c + 'ee');
+    g.addColorStop(1, b.c + '00');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+}
+
+/* ---------- título con italica + aberración cromática ---------- */
+function drawTitleLine(ctx, text, y, size) {
+  ctx.save();
+  ctx.translate(CX, y);
+  ctx.transform(1, 0, -0.20, 1, 0, 0); // shear -> italica
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `400 ${size}px Anton`;
+  ctx.letterSpacing = '0px';
+  ctx.fillStyle = 'rgba(0,190,210,0.80)'; ctx.fillText(text, 5, 3);   // cyan
+  ctx.fillStyle = 'rgba(230,20,140,0.80)'; ctx.fillText(text, -5, -3); // magenta
+  ctx.fillStyle = '#111111'; ctx.fillText(text, 0, 0);                 // negro
+  ctx.restore();
+}
+
+/* ---------- segmentos de fecha (pesos mezclados) ---------- */
+function drawSegments(ctx, segs, cx, y) {
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  let total = 0;
+  for (const s of segs) { ctx.font = `${s.w} ${s.s}px Oswald`; total += ctx.measureText(s.t).width; }
+  let x = cx - total / 2;
+  for (const s of segs) {
+    ctx.font = `${s.w} ${s.s}px Oswald`;
+    ctx.fillStyle = s.c || INK;
+    ctx.fillText(s.t, x, y);
+    x += ctx.measureText(s.t).width;
+  }
+}
+
+/* ---------- póster ---------- */
+function drawPoster(ctx, rawName) {
+  const name = (rawName && rawName.trim()) ? rawName.trim() : CONFIG.placeholderName;
+  ctx.clearRect(0, 0, W, H);
+  drawBackground(ctx);
+  ctx.lineWidth = 1;
+
+  /* TÍTULO */
+  const s1 = fitFontSize(ctx, CONFIG.brandLine1, 400, 'Anton', 118, 60, 800, 0);
+  drawTitleLine(ctx, CONFIG.brandLine1, 118, s1);
+  const s2 = fitFontSize(ctx, CONFIG.brandLine2, 400, 'Anton', 118, 60, 860, 0);
+  drawTitleLine(ctx, CONFIG.brandLine2, 214, s2);
+
+  /* FECHA */
+  drawSegments(ctx, [
+    { t: CONFIG.dayName, w: 700, s: 70 },
+    { t: ' ' + CONFIG.dayNum + ' ', w: 700, s: 70 },
+    { t: CONFIG.monthPre + ' ', w: 400, s: 52 },
+    { t: CONFIG.monthName, w: 600, s: 64 }
+  ], CX, 360);
+
+  /* HORA */
+  ctx.textAlign = 'center'; ctx.fillStyle = INK2;
+  ctx.font = '400 42px Oswald'; ctx.letterSpacing = '0px';
+  ctx.fillText(CONFIG.timeLine, CX, 425);
+
+  /* LUGAR (pin + texto) */
+  ctx.font = '500 46px Oswald';
+  const placeW = ctx.measureText(CONFIG.place).width;
+  const pinX = CX - placeW / 2 - 34;
+  drawPin(ctx, pinX, 470, 34, INK);
+  ctx.textAlign = 'left'; ctx.fillStyle = INK;
+  ctx.fillText(CONFIG.place, CX - placeW / 2 + 8, 496);
+
+  /* QR (izquierda) */
+  const qrSize = 300, qrX = 96, qrY = 640;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8);
+  try {
+    const qr = qrcode(0, 'M'); qr.addData(utf8Bytes(CONFIG.qrData)); qr.make();
+    const n = qr.getModuleCount(), cell = qrSize / n;
+    ctx.fillStyle = '#111111';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      if (qr.isDark(r, c)) ctx.fillRect(
+        Math.floor(qrX + c * cell), Math.floor(qrY + r * cell),
+        Math.ceil(cell), Math.ceil(cell));
+    }
+  } catch (e) {}
+  /* código bajo el QR */
+  ctx.textAlign = 'center'; ctx.fillStyle = INK2;
+  ctx.font = '400 34px "Courier New", monospace'; ctx.letterSpacing = '2px';
+  ctx.fillText(ticketCode(name), qrX + qrSize / 2, qrY + qrSize + 56);
+  ctx.letterSpacing = '0px';
+
+  /* COLUMNA DERECHA (junto al QR) */
+  const rx = 520;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = INK3; ctx.font = '400 30px Oswald';
+  ctx.fillText(CONFIG.accessLimit, rx, 672);
+
+  ctx.fillStyle = INK; ctx.font = '300 54px Oswald';
+  let py = 740;
+  for (const line of CONFIG.promo) { ctx.fillText(line, rx, py); py += 60; }
+
+  ctx.fillStyle = INK; ctx.font = '400 42px Oswald';
+  ctx.fillText(CONFIG.units, rx, 918);
+
+  /* separador tenue */
+  ctx.strokeStyle = 'rgba(20,20,20,0.18)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(96, 1010); ctx.lineTo(W - 96, 1010); ctx.stroke();
+
+  /* BLOQUE INFERIOR — IZQUIERDA */
+  const lx = 96;
+  ctx.fillStyle = INK; ctx.font = '700 36px Oswald';
+  ctx.fillText(name, lx, 1075);
+  ctx.fillStyle = INK3; ctx.font = '400 27px Oswald';
+  ctx.fillText(CONFIG.email, lx, 1112);
+
+  ctx.fillStyle = INK; ctx.font = '700 32px Oswald';
+  ctx.fillText(CONFIG.productTitle, lx, 1178);
+  ctx.fillStyle = INK2; ctx.font = '400 29px Oswald';
+  ctx.fillText(CONFIG.product, lx, 1214);
+
+  drawCake(ctx, lx + 2, 1252, 30, INK);
+  ctx.fillStyle = INK2; ctx.font = '400 28px Oswald';
+  ctx.fillText(CONFIG.ageLabel, lx + 52, 1272);
+  ctx.fillText(CONFIG.age, lx + 220, 1272);
+
+  drawHanger(ctx, lx, 1296, 34, INK);
+  ctx.fillText(CONFIG.dressLabel, lx + 52, 1320);
+  ctx.fillText(CONFIG.dress, lx + 220, 1320);
+
+  /* BLOQUE INFERIOR — DERECHA (descripción) */
+  ctx.fillStyle = INK; ctx.font = '700 32px Oswald';
+  ctx.fillText(CONFIG.descTitle, rx, 1075);
+  ctx.fillStyle = INK2; ctx.font = '400 25px Oswald';
+  wrapText(ctx, CONFIG.desc, rx, 1112, W - 96 - rx, 33);
+
+  /* MARCA + FOOTER */
+  // emblema de la marca (círculo con monograma)
+  ctx.save();
+  ctx.fillStyle = INK;
+  ctx.beginPath(); ctx.arc(CX, 1338, 25, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#f4f6e6';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = '700 28px Anton';
+  ctx.fillText('B', CX, 1341);
+  ctx.restore();
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = 'rgba(20,20,20,0.6)'; ctx.font = '400 19px Oswald';
+  ctx.fillText(CONFIG.footer1, CX, 1382);
+  ctx.fillText(CONFIG.footer2, CX, 1406);
+}
+
+/* ---------- lienzo ---------- */
 const canvas = document.getElementById('poster');
-canvas.width = W * SCALE;
-canvas.height = H * SCALE;
+canvas.width = W * SCALE; canvas.height = H * SCALE;
 const ctx = canvas.getContext('2d');
 ctx.scale(SCALE, SCALE);
 
@@ -2728,17 +2722,17 @@ async function ensureFonts() {
   if (fontsReady) return;
   try {
     await Promise.all([
-      document.fonts.load('400 168px Anton'),
-      document.fonts.load('700 50px Oswald'),
-      document.fonts.load('600 30px Oswald'),
-      document.fonts.load('500 26px Oswald'),
-      document.fonts.load('400 27px Oswald')
+      document.fonts.load('400 118px Anton'),
+      document.fonts.load('700 70px Oswald'),
+      document.fonts.load('600 64px Oswald'),
+      document.fonts.load('500 46px Oswald'),
+      document.fonts.load('400 42px Oswald'),
+      document.fonts.load('300 54px Oswald')
     ]);
     await document.fonts.ready;
   } catch (e) {}
   fontsReady = true;
 }
-
 function render(name) { drawPoster(ctx, name); }
 
 /* ---------- interacción ---------- */
@@ -2749,49 +2743,34 @@ const okEl  = document.getElementById('ok');
 
 function slug(s) {
   return s.trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'invitado';
 }
 
 let t;
 input.addEventListener('input', () => {
-  okEl.classList.remove('show');
-  errEl.textContent = '';
-  clearTimeout(t);
-  t = setTimeout(() => render(input.value), 120);
+  okEl.classList.remove('show'); errEl.textContent = '';
+  clearTimeout(t); t = setTimeout(() => render(input.value), 120);
 });
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = input.value.trim();
-  if (!name) {
-    errEl.textContent = 'Escribe tu nombre para generar la invitación.';
-    input.focus();
-    return;
-  }
+  if (!name) { errEl.textContent = 'Escribe tu nombre para generar la entrada.'; input.focus(); return; }
   errEl.textContent = '';
   await ensureFonts();
   render(name);
-
   canvas.toBlob((blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `Invitacion-BorjaDeluxe-${slug(name)}.png`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    a.href = url; a.download = `Entrada-BorjitaDeluxe-${slug(name)}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
     okEl.classList.add('show');
   }, 'image/png');
 });
 
-/* primer render */
-(async () => {
-  render('');
-  await ensureFonts();
-  render(input.value);
-})();
+(async () => { render(''); await ensureFonts(); render(input.value); })();
 </script>
 </body>
 </html>
