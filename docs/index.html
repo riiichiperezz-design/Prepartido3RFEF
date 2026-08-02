@@ -141,8 +141,8 @@ const CONFIG = {
   desc:       "*Marcas concertadas *Prohibido acceder con: riñoneras, bandoleras, gorras, boinas, ropa deportiva o de trabajo. La organización se reserva el derecho de admisión.",
   footer1:    "La compra de esta entrada implica la aceptación de los términos de Borjita Deluxe Producciones.",
   footer2:    "Borjita Deluxe Producciones no se responsabiliza de ningún acontecimiento relativo al evento.",
-  // Contenido que se lee al escanear el QR:
-  qrData:     "¡TOCA Y VETE CACAHUETE EN LA FIESTA DE CAÑETE!",
+  // El QR (pre-generado abajo) abre esta URL, que muestra la frase en fondo negro:
+  qrData:     "https://riiichiperezz-design.github.io/Prepartido3RFEF/mensaje.html",
   placeholderName: "Invitado Especial"
 };
 
@@ -150,9 +150,9 @@ const W = 1000, H = 1414, SCALE = 2, CX = W / 2;
 const INK = '#141414', INK2 = '#3a3a3a', INK3 = '#5a5a5a';
 
 /* ---------- helpers ---------- */
-// QR pre-generado (matriz 33x33) del mensaje de CONFIG.qrData — verificado al escanear
-const QR_N = 33;
-const QR_BITS = "/utRv8EQaRBum2Nrt19tpduo46LsFbSBB/qqqv4Bo44Ai4wa/PBnWBl1mnNWRKNt+yn5c6ZowcSGmKwbyupSNPiRfgVib/p4eCP3i+ljXjQwsytySEo1JYHDvDlVOnYZX4ow7hAa+4BGmEb/uHPq0EMMkRusU4+t0USBEumDySEEhPoI/vULgIA=";
+// QR pre-generado (matriz 37x37) que abre CONFIG.qrData — verificado al escanear
+const QR_N = 37;
+const QR_BITS = "/l0sq/wQcISQbrYngrt1B7bV26w7kK7BaNEtB/qqqq/gEUAGAL4LPuPnI9wIWrzsmw6+k41McBK8Rj979nF+lIlY5RJfeTzNxjMr24TnKSgbeFi1k/S2dmiGfDwacN2ubkb4XKQhn7ypf3IEYADxWqs/d6xKvghTK94KrmcLSQlfKrAMHv6Acf7ca/hPMqrwWJ/1G7q0hd+911taNG6/dLYXBEI6PR/r1zcPgA==";
 const QR_BYTES = (function(){var b=atob(QR_BITS),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;})();
 function qrDark(r,c){var i=r*QR_N+c;return (QR_BYTES[i>>3]>>(7-(i&7)))&1;}
 function roundRect(ctx, x, y, w, h, r) {
@@ -295,7 +295,7 @@ function drawSegments(ctx, segs, cx, y) {
 }
 
 /* ---------- póster ---------- */
-function drawPoster(ctx, rawName) {
+function drawPoster(ctx, rawName, withQR) {
   const name = (rawName && rawName.trim()) ? rawName.trim() : CONFIG.placeholderName;
   ctx.clearRect(0, 0, W, H);
   drawBackground(ctx);
@@ -330,9 +330,9 @@ function drawPoster(ctx, rawName) {
 
   /* QR (izquierda) */
   const qrSize = 300, qrX = 96, qrY = 640;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8);
-  {
+  if (withQR) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8);
     const n = QR_N, cell = qrSize / n;
     ctx.fillStyle = "#111111";
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
@@ -430,7 +430,7 @@ async function ensureFonts() {
   } catch (e) {}
   fontsReady = true;
 }
-function render(name) { drawPoster(ctx, name); }
+function render(name, withQR) { drawPoster(ctx, name, withQR); }
 
 /* ---------- interacción ---------- */
 const input = document.getElementById('name');
@@ -456,7 +456,7 @@ form.addEventListener('submit', async (e) => {
   if (!name) { errEl.textContent = 'Escribe tu nombre para generar la entrada.'; input.focus(); return; }
   errEl.textContent = '';
   await ensureFonts();
-  render(name);
+  render(name, true);   // dibuja CON QR solo para la descarga
   canvas.toBlob((blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -464,6 +464,7 @@ form.addEventListener('submit', async (e) => {
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
     okEl.classList.add('show');
+    render(input.value, false); // restaura la vista previa SIN QR
   }, 'image/png');
 });
 
