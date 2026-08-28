@@ -9,6 +9,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { CAL_TEAMS, CAL_FIXTURES } from "./calendar-data";
+import { SQUADS } from "./squads-data";
 
 const prisma = new PrismaClient();
 
@@ -61,6 +62,14 @@ async function main() {
       },
     });
     idByName[t.name] = created.id;
+
+    // Plantilla real (si se ha aportado) — solo nombres; el resto se completa en la app.
+    const squad = SQUADS[t.short];
+    if (squad?.length) {
+      await prisma.player.createMany({
+        data: squad.map((name) => ({ teamId: created.id, name, dataOrigin: "MANUAL" })),
+      });
+    }
   }
 
   // Calendario (partidos). Hora orientativa 17:00.
