@@ -14,7 +14,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -107,7 +107,8 @@ model Player {
   yellowCards              Int      @default(0)
   redCards                 Int      @default(0)
 
-  // Temporada anterior (histórico disciplinario)
+  // Temporada anterior (histórico)
+  previousSeasonGoals       Int     @default(0)
   previousSeasonYellowCards Int     @default(0)
   previousSeasonRedCards    Int     @default(0)
 

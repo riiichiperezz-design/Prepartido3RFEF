@@ -19,6 +19,7 @@ import {
   CheckIcon,
 } from "@/components/icons";
 import { SITUATION_TYPE_LABELS, type SituationType } from "@/lib/enums";
+import SetupBanner from "@/components/SetupBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +66,18 @@ export default async function DashboardPage() {
     .sort((a, b) => RISK_ORDER[b.p.effectiveRisk] - RISK_ORDER[a.p.effectiveRisk])
     .slice(0, 5);
   const teamsByRisk = [...teams].sort((a, b) => RISK_ORDER[b.effectiveRisk] - RISK_ORDER[a.effectiveRisk]).slice(0, 5);
+
+  if (teams.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <p className="eyebrow">Tercera Federación · Grupo 14 · Extremadura</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-ink">Panel de control</h1>
+        </div>
+        <SetupBanner />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
