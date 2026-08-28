@@ -1,6 +1,7 @@
 import { getProvidersStatus, getActiveProviderKey } from "@/dataProviders";
 import { DATA_PROVIDER_LABELS } from "@/lib/enums";
 import ProviderCard from "@/components/ProviderCard";
+import CrestSync from "@/components/CrestSync";
 import AlertBox from "@/components/AlertBox";
 
 export const dynamic = "force-dynamic";
@@ -12,11 +13,13 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-ink">Ajustes · Fuentes de datos</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Ajustes · Fuentes de datos</h1>
         <p className="text-sm text-ink-muted">
           Elige de dónde salen los datos. La app funciona perfectamente sin ninguna API configurada.
         </p>
       </div>
+
+      <CrestSync />
 
       <AlertBox level="info" title="Cómo cambiar el proveedor activo">
         El proveedor activo se define en el archivo <code>.env</code> con la variable{" "}
